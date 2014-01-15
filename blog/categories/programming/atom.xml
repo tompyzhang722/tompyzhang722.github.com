@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Programming | ShareCore]]></title>
+  <link href="http://sharecore.info/blog/categories/programming/atom.xml" rel="self"/>
+  <link href="http://sharecore.info/"/>
+  <updated>2014-01-14T09:29:10+08:00</updated>
+  <id>http://sharecore.info/</id>
+  <author>
+    <name><![CDATA[Justin Huang]]></name>
+    <email><![CDATA[justinhuang917@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[防御性编程小例]]></title>
+    <link href="http://sharecore.info/blog/2014/01/13/defensive-programming/"/>
+    <updated>2014-01-13T23:13:00+08:00</updated>
+    <id>http://sharecore.info/blog/2014/01/13/defensive-programming</id>
+    <content type="html"><![CDATA[<p>今天面试一个人时，突然想起一个话题：<em>防御性编程</em> 。我们先看一个小程序，这也是以前出过的一道简单面试题：<strong>写一个函数，可以将一个小写字母转换为大写字母</strong>。这道简单的题，完全写对的答案却少之又少。大部分答案是这样的:</p>
+
+<p>``` c</p>
+
+<pre><code>int toupper(int c){
+   c=c-32;
+   return c;
+}
+</code></pre>
+
+<p><code>
+看似简单的答案，确实不完整的，或者说正好落入了题目本身的圈套。到此， 你或许看出了问题所在。对，问题就出现在参数c的取值判断上，最明显的就是当c小于32时，c-32小于0,返回值肯定不在字符取值范围内。所以，我们加上了判断：
+</code> c
+int toupper(int c){
+  if(c>32){</p>
+
+<pre><code>c=c-32;
+</code></pre>
+
+<p>  }
+ return c;
+}
+<code>
+加上了对参数c判断，这就是防御性编程的第一步了。可惜，在这道题里，这也还是错误。如果我们传入67('C')来调用toupper,返回的是35（'#'）,显然也是错误的。所以，我们的代码防御，应该将c的合法取值限制在一个更小的范围(小写字母集合)。
+</code> c
+int toupper(int c){
+  if(c>='a' &amp;&amp; c&lt;='z'){</p>
+
+<pre><code> c=c-32;
+</code></pre>
+
+<p>  }
+ return c;
+}
+```</p>
+
+<p>至此，代码可以正确工作了。（最可惜的是，很多同学写的代码已经“进展”到下面这样了，却还没有发现c的取值范围应该限制为小写字母集合）
+<code>c
+int toupper(int c){
+  c+='A'-'a';
+  return c;
+}
+</code></p>
+
+<p>这就是<em>防御性编程</em>的最基本规则：保护程序免遭非法输入数据的破坏。</p>
+
+<p>或许你会比较乐观的认为，我的程序不会被非法输入来调用，当你这么想时，请参考一下<a href="http://zh.wikipedia.org/wiki/%E5%A2%A8%E8%8F%B2%E5%AE%9A%E5%BE%8B">墨菲定律</a></p>
+
+<p>保护程序免遭非法输入数据的破坏,我们一般有以下几种方法：</p>
+
+<ol>
+<li><p><strong>检查所有来源于外部的数据的值：</strong> 当从文件，用户或网络等外部接口获取数据时，应该检查所有输入的值，不要有任何庆幸，以确保它们在合法的范围之类。比如，对于数值，应该确保它的可接受范围（如非负数）;对于字符串，要确保它长度合法;对于更多的安全要求的，还要进行sql注入，html/xml注入等的检查。</p></li>
+<li><p><strong>检查子程序所有输入参数的值：</strong> 这点与第一条类似，只是输入来源于程序内部，而不是外部。比如一个空指针，一个空对象的检查等等。</p></li>
+<li><p><strong>决定如何处理错误的输入值</strong>: 当你检查到程序的非法输入值后，要决定如何对这些非法值进行处理，是忽略还是抛出错误？要视情况而定，比如我们的toupper函数，忽略非法值输入是合理的。</p></li>
+</ol>
+
+]]></content>
+  </entry>
+  
+</feed>

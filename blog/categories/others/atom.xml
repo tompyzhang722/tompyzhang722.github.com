@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: others | ShareCore]]></title>
+  <link href="http://sharecore.info/blog/categories/others/atom.xml" rel="self"/>
+  <link href="http://sharecore.info/"/>
+  <updated>2014-01-14T09:29:10+08:00</updated>
+  <id>http://sharecore.info/</id>
+  <author>
+    <name><![CDATA[Justin Huang]]></name>
+    <email><![CDATA[justinhuang917@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[计算机科学箴言集锦]]></title>
+    <link href="http://sharecore.info/blog/2013/12/04/motto-of-programming/"/>
+    <updated>2013-12-04T19:45:00+08:00</updated>
+    <id>http://sharecore.info/blog/2013/12/04/motto-of-programming</id>
+    <content type="html"><![CDATA[<p>今早读《编程珠玑续》一书，里面有一章全是关于计算机科学箴言的集锦，觉得很有意思，在此摘抄一些与大家共享。</p>
+
+<ul>
+<li><p><strong>编程</strong></p>
+
+<ul>
+<li><p>如果没想清楚，那就用蛮力算法吧     ———Ken Thompson, Bell Lab</p></li>
+<li><p>程序写得越急，程序跑得越慢   ——Roy Calson, 威斯康星大学</p></li>
+<li><p>你用英语都写不出来的东西，就别指望用代码写了    ——Peter Halpern</p></li>
+<li><p>如果你发现特殊情况太多，那你肯定是用错方法了    ——Craig Zerouni,Computer FX 公司</p></li>
+<li><p>先把数据结构搞清楚，程序的其余部分自现 ———David Jones 荷兰阿森</p></li>
+</ul>
+</li>
+<li><p><strong>用户界面</strong></p>
+
+<ul>
+<li><p>手工填写的表单中有20%都包含坏数据  ———Vic Vyssotsky,Bell Lab</p></li>
+<li><p>80%的表单会要你回答没有必要的问题  ———Mike Garey, Bell Lab</p></li>
+<li><p>不要让用户提供那些系统已经知道的信息    ———Rick Lemons, Cardinal数据系统公司</p></li>
+<li><p>所有数据集的85%中，有95%的信息量都可以用清晰的图表示    ———William S.Clevelan,Bell Lab</p></li>
+</ul>
+</li>
+<li><p><strong>调试</strong></p>
+
+<ul>
+<li><p>在我所有的程序错误中，80%是语法错误，剩下的20%里，80%是简单的逻辑错误。剩下的4%里，80%是指针错误。只有余下的0.8%才是困难的问题  ————Marc Donner，IBM</p></li>
+<li><p>测试只能证明程序有错误，而不能证明程序没有错误 ———Edsger W. Dijkstra</p></li>
+<li><p>新系统的每一个用户都可能发现一类新的错误      ———Brian Kernighan ,Bell Lab</p></li>
+</ul>
+</li>
+<li><p><strong>性能</strong></p>
+
+<ul>
+<li><p>在一个非I/O密集型的程序中，超过一半的运行时间花在不足4%的代码上  ———Don Knuth,斯坦福大学</p></li>
+<li><p>最快的I/O就是不I/O      ———Nils-Peter Bell Lab</p></li>
+<li><p>电没纳秒传播一英尺   ———Grace Murray Hopper,美国海军上将</p></li>
+<li><p>Lisp程序员知道所有东西的值，却不知道那些东西的计算成本   ———Alan Perlis,耶鲁大学</p></li>
+</ul>
+</li>
+<li><p><strong>文档</strong></p>
+
+<ul>
+<li><p>如果一句话反过来就必然不成立，那就根本没必要把这句话放进文档    ———Bob Martin, AT&amp;T公司</p></li>
+<li><p>一个{规格说明，设计，过程，测试计划}如果不能在一页8.5英寸×11英寸的纸上写明白，那么这个东西别人就没法理解 ———Mark Ardis 王安公司</p></li>
+</ul>
+</li>
+<li><p><strong>软件管理</strong></p>
+
+<ul>
+<li><p>系统的结构反映出构建该系统的组织的结构 ———Richar E. Fairley,王安公司</p></li>
+<li><p>正确的判断源于经验，然而经验来源于错误的判断        ———Fred Brooks,北卡罗来纳大学</p></li>
+<li><p>拼命干活无法取代理解    ———H.H. Williams</p></li>
+</ul>
+</li>
+<li><p><strong>其他</strong></p>
+
+<ul>
+<li><p>对计算机撒谎是要受到惩罚的   ———Perry Farrar</p></li>
+<li><p>一个人的常量是另一个人的变量    ———Susan Gerhart</p></li>
+<li><p>一个人的数据就是另一个人的程序 ———Guy L. Steele</p></li>
+</ul>
+</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[《深入理解计算机系统》思维导图]]></title>
+    <link href="http://sharecore.info/blog/2013/11/03/deep-into-computer-system/"/>
+    <updated>2013-11-03T17:55:00+08:00</updated>
+    <id>http://sharecore.info/blog/2013/11/03/deep-into-computer-system</id>
+    <content type="html"><![CDATA[<p><a href="http://sharecore.info/images/computer_basic/deep_into_computer_system.jpg" target="_blank"><img src="http://sharecore.info/images/computer_basic/deep_into_computer_system.jpg" alt="《深入理解计算机系统》思维导图" /></a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[做正确的事情，等待被炒]]></title>
+    <link href="http://sharecore.info/blog/2013/07/13/do-the-right-thing-wait-to-get-fired/"/>
+    <updated>2013-07-13T13:22:00+08:00</updated>
+    <id>http://sharecore.info/blog/2013/07/13/do-the-right-thing-wait-to-get-fired</id>
+    <content type="html"><![CDATA[<p>(翻译)<a href="http://brendansterne.com/2013/07/11/do-the-right-thing-wait-to-get-fired/">原文链接</a></p>
+
+<p> 一次偶然的机会我在《Team Geek: A Software Developers Guide to Working Well with Others》一书中，看到了Google工程师Chade-Meng Tan的一段让我很有共鸣的话：</p>
+
+<p><strong><em>做正确的事 等待被炒鱿鱼</em></strong></p>
+
+<p><em>一些Google的新员工(我们称为“Nooglers”)经常问我，怎么做才能让更有效？我半开玩笑的告诉他们：我只是做对Google和世界来说是正确的事情，然后回到座位等待被炒鱿鱼。如果我没有被炒，那我做的事情对每个人来说都是对的。如果我被炒掉，那我压根就是为一个错误的老板工作，所以，无论怎样，我都赢了。这就是我的职场战略。</em></p>
+
+<p>这需要你对自己的判断有自信，对权力和责任作出臆测，作出决定，承担风险——换句话说就是你要做雇用你该做的事情。</p>
+
+<p>你要意识到公司其实是变态的。他们制定流程，规则和组织，他们需要你按他们规则行事：</p>
+
+<ul>
+<li>"员工评估就这样做..."</li>
+<li>"会议出席规则如下..."</li>
+<li>"产品要被测试并以这种方式部署..."</li>
+<li>"新项目启动需要这些人的同意..."</li>
+</ul>
+
+
+<p>大体来说，这些规则比没有指引和组织要好。他能帮助新的管理者和团队有效运作。他们能推动员工以良好的方式做事。</p>
+
+<p>但是伟大的事情很少在按规则，流程和组织办事的方式下发生，这也是为什么很多公司也想要寻找愿意承担风险，做决定，尝试新事物，快速行事甚至是打破传统的员工。</p>
+
+<p>这意味当一个流程太过重量级时，在这个情况下，一个更简单的替代方案是更好的选择。意味着要打个电话去承担技术债务或操作风险，因为从真正的用户那获取新产品／功能的回馈是最重要的。意味着要愿意让一个员工去参加一个他满怀热情参加的会议，哪怕旅途的经费是超出预算的。意味着有时候坐下来按自己的想法做一些新的工具来帮助团队诊断客户的问题是非常值得的。也意味着，需要放慢重构的速度，哪怕它们会让你快速完成事情的声誉受损。你应该做这些，因为这些对你的团队，公司，甚至是你客户来说，都是正确的事情。</p>
+
+<p>当你打破规则，做自己认为正确的事情，你也正承担着风险。有时候这是值得的，但也不总是这样的。失败是可以接受的，但别在同一件事情上因为同一个原因重复失败。了解你自己的风险，从结果中学习。我知道的最好的工程师和管理者都是愿意打破规则承担风险的。你也应该这么做！</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[MapReduce的变体：HashFold介绍]]></title>
+    <link href="http://sharecore.info/blog/2013/06/11/whats-hashfold/"/>
+    <updated>2013-06-11T01:07:00+08:00</updated>
+    <id>http://sharecore.info/blog/2013/06/11/whats-hashfold</id>
+    <content type="html"><![CDATA[<p>说到MapReduce计算模型大家应该都清楚。今天我们来看一下MapReduce一个变体：HasFold。</p>
+
+<p>这种模型将MapReduce中一些没有细化的部分，如Map后数据如何排序再进行Reduce等，通过Hash表这一数据结构的性质做了清晰的描述。</p>
+
+<p>HashFold模型的大概过程大概是这样的：</p>
+
+<ul>
+<li>Map过程在接收原始数据之后，将数据生成key-value对。</li>
+<li>对于key重复的value，会将两个重复的value传给Fold过程，Fold过程会返回一个新值。</li>
+</ul>
+
+
+<p>下面是MapReduce中典型示例：计算文件中的单词个数的实现（Go）</p>
+
+<p>``` go
+package main</p>
+
+<p>import (</p>
+
+<pre><code>"fmt"
+"io/ioutil"
+"regexp"
+"strings"
+</code></pre>
+
+<p>)</p>
+
+<p>type Pair struct {</p>
+
+<pre><code>key   string
+count int
+</code></pre>
+
+<p>}</p>
+
+<p>func main() {</p>
+
+<pre><code>fname := "README"
+hash := Start(fname)
+for k, v := range hash {
+    fmt.Printf("word:%s,count:%d\n", k, v)
+}
+</code></pre>
+
+<p>}</p>
+
+<p>func Start(fname string) map[string]int {</p>
+
+<pre><code>hash := make(map[string]int, 0)
+bytes, _ := ioutil.ReadFile(fname)
+source := string(bytes)
+pairs := Map(source)//调用Map分割输入
+for _, p := range pairs {
+    if _, ok := hash[p.key]; !ok {//判断重复
+        hash[p.key] = p.count
+    } else {//如果重复，调用Fold函数
+        hash[p.key] = Fold(hash[p.key], p.count)
+    }
+}
+return hash
+</code></pre>
+
+<p>}</p>
+
+<p>func Map(source string) []Pair {</p>
+
+<pre><code>pairs := make([]Pair, 0, 0)
+arr := strings.Split(source, "\n")
+re := regexp.MustCompile("[\\pP‘’“”]") 
+for _, line := range arr {
+    newLine := re.ReplaceAllString(line, " ")//替换标点符号
+    for _, word := range strings.Split(newLine, " ") {
+        if word != "" {
+            k := strings.ToLower(word)//转换为小写
+            pairs = append(pairs, *&amp;Pair{key: k, count: 1})
+        }
+    }
+}
+return pairs
+</code></pre>
+
+<p>}</p>
+
+<p>func Fold(v1, v2 int) int {</p>
+
+<pre><code>return v1 + v2//次数相加
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[将CSV转换为Sql的Python脚本]]></title>
+    <link href="http://sharecore.info/blog/2013/04/05/parse-csv-to-sql-for-insert/"/>
+    <updated>2013-04-05T23:43:00+08:00</updated>
+    <id>http://sharecore.info/blog/2013/04/05/parse-csv-to-sql-for-insert</id>
+    <content type="html"><![CDATA[<p>昨天被要求将两大批MS Excel格式的数据导入到Mysql数据库里。如是果断花了15分钟写了一段Python脚本，来将CSV转换成对应的“insert sql”来完成。很顺利写完，也能生成在编辑器中看起来OK的sql。可是拿去执行就是不能成功，用vi一看，每行前面多了一个字节(EF BB BF)。想起以前windows下编译GO的时候遇到的BOM bug，如是家了函数（trim_bom）去掉就OK了。下面是代码:</p>
+
+<p>``` python</p>
+
+<h1>!/usr/bin/env python</h1>
+
+<p>"""csv2sql"""</p>
+
+<p>import os
+import csv
+import sys
+import optparse
+import os.path
+import fnmatch
+import datetime
+import codecs</p>
+
+<p>def main():</p>
+
+<pre><code>opts, args = parse_options()
+
+filename = args[0]
+table = os.path.splitext(filename)[0]
+fd = open(filename, "rU")
+rows = generate_rows(fd)
+fields = ", ".join(rows.next())
+
+fields=trim_bom(fields) #fix the BOM bug in windows.
+
+outfilename=table+".sql";
+ensureFileExsited(outfilename)
+for i, row in enumerate(rows):
+    values = ", ".join(["\'%s\'" % x for x in row])
+    write("INSERT INTO %s ( %s ) VALUES (%s);" % (table, fields, values),outfilename)
+</code></pre>
+
+<p>def parse_options():</p>
+
+<pre><code>parser = optparse.OptionParser()
+opts, args = parser.parse_args()
+if len(args) &lt; 1:
+    raise SystemExit, 1
+return opts, args
+</code></pre>
+
+<p>def generate_rows(filename):</p>
+
+<pre><code>sniffer = csv.Sniffer()
+dialect = sniffer.sniff(filename.readline())
+filename.seek(0)
+reader = csv.reader(filename, dialect)
+for line in reader:
+    yield line
+</code></pre>
+
+<p>def trim_bom(str):</p>
+
+<pre><code>if not str:
+    return ''
+if len(str) &lt; 3:
+    return ''
+if str[:3] == codecs.BOM_UTF8:
+    return str[3:]
+return str
+</code></pre>
+
+<p>def ensureFileExsited(filename):</p>
+
+<pre><code>if not os.path.exists(filename):
+    f=open(filename,'w')
+    # f.write("")
+    f.close()
+</code></pre>
+
+<p>def write(str,filename):</p>
+
+<pre><code>f=open(filename,'a')
+str=str+"\n"
+f.writelines([str])
+print(str)  
+f.close()
+</code></pre>
+
+<p>if <strong>name</strong> == "<strong>main</strong>":</p>
+
+<pre><code>main()
+</code></pre>
+
+<p>```</p>
+
+<p>使用:
+<code>sh
+./csvtosql.py tablename.csv
+</code></p>
+
+<p>顺便说一下，BOM是微软UTF-8编码独有的，它在文档的开头加了4个特殊的字节来标识UTF-8编码。在Go的编译器里，如果源码文件有BOM，将导致编译器不能编译通过。以前有人将这个当作Go的bug提给了Google Go Team,被UTF-8的Co-Creator Rob Pike(也是Go的Co-Creator)深深鄙视了。BOM的详细信息，请Google之。</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: linux/unix | ShareCore]]></title>
+  <link href="http://sharecore.info/blog/categories/linux-unix/atom.xml" rel="self"/>
+  <link href="http://sharecore.info/"/>
+  <updated>2014-01-14T09:29:10+08:00</updated>
+  <id>http://sharecore.info/</id>
+  <author>
+    <name><![CDATA[Justin Huang]]></name>
+    <email><![CDATA[justinhuang917@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Linux文件系统十问]]></title>
+    <link href="http://sharecore.info/blog/2013/08/25/linux-file-system-ten-answers/"/>
+    <updated>2013-08-25T16:28:00+08:00</updated>
+    <id>http://sharecore.info/blog/2013/08/25/linux-file-system-ten-answers</id>
+    <content type="html"><![CDATA[<p>今天读到<a href="http://djt.qq.com/article/view/620">这篇文章:Linux文件系统十问，你知道吗？</a>，作了个总结笔记：</p>
+
+<p><strong>1、机械磁盘随机读写时速度非常慢，操作系统是采用什么技巧来提高随机读写的性能的？</strong></p>
+
+<p> 磁盘读写时间=寻道时间（找磁道）+盘面旋转时间（找扇区）+读／写时间，而旋转时间和读／写时间是常量，所以需要尽量缩短寻道时间。操作系统在分区时，按柱面的区域分区而不是盘面的区域分区，以缩短在同一个分区里连续读的寻道时间。</p>
+
+<p><strong>2、touch一个新的空文件占用磁盘空间吗？ 占用的话占用多少？</strong></p>
+
+<p> 一个新的空文件会占用磁盘空间，占的大小为一个inode的size.inode的详细介绍可查看: <a href="http://www.ruanyifeng.com/blog/2011/12/inode.html">理解inode</a></p>
+
+<p><strong>3、新建一个空目录占用磁盘空间吗？占用多少？和新建一个文件相比，哪个占用的更大？</strong></p>
+
+<p>新建的空目录会占用磁盘空间，新目录会占用一个inode，同时分配一个block size（如4.0k）。
+可如下方式查看空目录的大小。
+<code>sh
+justinhuang@ubuntu:~/temp/temp$ du -h
+4.0K    .
+</code>
+新建的文件，如果是空文件，不占用block。
+<code>sh
+justinhuang@ubuntu:~/temp/temp$ &gt;1
+justinhuang@ubuntu:~/temp/temp$ &gt;2
+justinhuang@ubuntu:~/temp/temp$ ll
+总用量 8
+drwxrwxr-x  2 justinhuang justinhuang 4096  8月 25 16:14 ./
+drwxrwxr-x 15 justinhuang justinhuang 4096  8月 25 15:08 ../
+-rw-rw-r--  1 justinhuang justinhuang    0  8月 25 16:14 1
+-rw-rw-r--  1 justinhuang justinhuang    0  8月 25 16:14 2
+justinhuang@ubuntu:~/temp/temp$ du -h
+4.0K    .
+</code></p>
+
+<p><strong>4、你知道文件名是记录在磁盘的什么地方吗？</strong></p>
+
+<p>文件名的记录存在目录的block中，所以当空文件过多后（多于一个block大小），会使重新分配的目录的block。使目录占用空间变大。</p>
+
+<p><strong>5、文件名最长多长？受什么制约？</strong></p>
+
+<p>Lunux文件名最长限制为255byte</p>
+
+<p><strong>6、文件名太长了会影响系统性能吗？为什么会产生影响？</strong></p>
+
+<p>文件名太长会导致文件名读取时花费更多的磁盘IO。</p>
+
+<p><strong>7、一个目录下最多能建立多少个文件？</strong></p>
+
+<p>受目录下inode的数量限制，但是文件太多，OS需要读取的block也增多。导致性能问题。</p>
+
+<p><strong>8、新建一个内容大小1k的文件，实际会占用多大的磁盘空间？</strong>
+一个block size(一般为4.0k)+一个inode size(一般为256byte)。
+<code>sh
+justinhuang@ubuntu:~/temp/temp$ echo "" &gt;1
+justinhuang@ubuntu:~/temp/temp$ ll
+总用量 12
+drwxrwxr-x  2 justinhuang justinhuang 4096  8月 25 16:23 ./
+drwxrwxr-x 15 justinhuang justinhuang 4096  8月 25 15:08 ../
+-rw-rw-r--  1 justinhuang justinhuang    1  8月 25 16:23 1
+justinhuang@ubuntu:~/temp/temp$ du -h
+8.0K    .
+</code></p>
+
+<p><strong>9、向操作系统发起读取文件2Byte的命令，操作系统实际会读取多少呢？</strong></p>
+
+<p>文件系统在向磁盘发起IO请求的时候，也是以block size为单位。所以会读取一个block size。这也是程序的局部性原理的应用</p>
+
+<p><strong>10、我们使用文件时要怎么样来能提高磁盘IO速度？</strong></p>
+
+<p>新建文件时，可以告诉OS你新建的文件大概需要的空间大小，以使OS尽量为文件分配连续的block，缩短寻道时间，提高读写性能。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Linux Container的安装与使用介绍]]></title>
+    <link href="http://sharecore.info/blog/2013/07/21/linux-container-introduction/"/>
+    <updated>2013-07-21T19:58:00+08:00</updated>
+    <id>http://sharecore.info/blog/2013/07/21/linux-container-introduction</id>
+    <content type="html"><![CDATA[<p>今天想在机器上搭建一个我用Go写的玩的一个分布式文件小系统，可我只有一台Laptop和一台Desktop，两台都装的Ubuntu 12.04。我需要多几个隔离的OS来试验多节点。以前阅读看到过Linux Container的介绍，于是研究了下，用它来搭建了虚拟环境，在此作个记录，方便大家：
+首先，安装 Linux Container:
+<code>sh
+$ sudo apt-get install lxc
+</code>
+直接“yes”，继续完成安装。这一步能比较快的完成，只有13M多点的文件要下载。当然，完成这一步也只是完成了容器程序的安装，虚拟OS的安装在后面。</p>
+
+<p>安装完Linux Contaner后，可以在/usr/lib/lxc/templates目录下看到，可以安装哪些OS进来。
+```sh
+$ ll /usr/lib/lxc/templates/
+drwxr-xr-x 2 root root  4096  7月 21 11:02 ./
+drwxr-xr-x 4 root root  4096  7月 21 11:02 ../
+-rwxr-xr-x 1 root root  8227  2月 21 04:29 lxc-busybox<em>
+-rwxr-xr-x 1 root root  9806  2月 21 04:29 lxc-debian</em>
+-rwxr-xr-x 1 root root 10520  2月 21 04:29 lxc-fedora<em>
+-rwxr-xr-x 1 root root  9094  2月 21 04:29 lxc-opensuse</em>
+-rwxr-xr-x 1 root root  5115  2月 21 04:29 lxc-sshd<em>
+-rwxr-xr-x 1 root root 19736  2月 21 04:29 lxc-ubuntu</em>
+-rwxr-xr-x 1 root root 10590  2月 21 04:29 lxc-ubuntu-cloud*</p>
+
+<p>```</p>
+
+<p>接下来，可以建立虚拟OS了：
+<code>sh
+$ sudo lxc-create -t ubuntu -n lxc_ubuntu_1
+</code>
+参数说明：</p>
+
+<ul>
+<li><p>-t: OS类型</p></li>
+<li><p>-n: 虚拟OS的名称</p></li>
+</ul>
+
+
+<p>这一步需要比较长的时间，当然，也取决于你的网络下载速度。</p>
+
+<p>虚拟OS的版本，如果安装时没特别指定参数，与Host OS的版本是相同他的，比如host OS是i386，那安装的也是i386。可以用以下参数指定版本：
+<code>sh
+sudo lxc-create -t ubuntu -n lxc_ubuntu_1 -- -r lucid -a i386
+</code>
+虚拟OS安装完成后，<strong>注意输出最后两行的用户名和密码提示，这是登录虚拟OS的默认帐号。</strong></p>
+
+<p>你可以通过下面方式查看：
+<code>sh
+$ ll /var/lib/lxc/
+drwxr-xr-x  4 root root 4096  7月 21 20:39 ./
+drwxr-xr-x 63 root root 4096  7月 21 11:02 ../
+drwxr-xr-x  3 root root 4096  7月 21 14:14 lxc_ubuntu_1/
+</code>
+至此，虚拟OS安装完成了，你可以先更新package。</p>
+
+<p><code>sh
+$ sudo apt-get updata
+$ sudo apt-get upgrade
+</code></p>
+
+<p>至此，可以启动虚拟OS了。
+<code>sh
+$ sudo lxc-start -n lxc_ubuntu_1
+</code>
+同时，如果需要安装多个虚拟OS，可以使用复制命令完成复制：</p>
+
+<p><code>sh
+$ sudo lxc-clone -o lxc_ubuntu_1 -n lxc_ubuntu_2
+</code></p>
+
+<p>也可以删除已安装的虚拟OS：</p>
+
+<p><code>sh
+$ sudo lxc-destroy -n lxc_ubuntu_2
+</code></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Unix编程艺术（读书笔记）—Unix哲学基础]]></title>
+    <link href="http://sharecore.info/blog/2013/01/05/the-art-of-unix-programming-1/"/>
+    <updated>2013-01-05T22:15:00+08:00</updated>
+    <id>http://sharecore.info/blog/2013/01/05/the-art-of-unix-programming-1</id>
+    <content type="html"><![CDATA[<p>Unix哲学（同其他工程领域的民间传统一样）是自下而上的，而不是自上而下的。Unix哲学注重实效，立足于丰富的经验。你不会在正规方法学和标准中找到它，它更接近与隐性的半本能的知识，即Unix文化所传播的<strong>专业经验</strong>。它鼓励那种分清轻重缓急的感觉，以及<strong>怀疑一切</strong>态度，并鼓励你以<strong>幽默达观</strong>的态度对待这些。</p>
+
+<h3>Unix管道发明人 Doug Mcllroy</h3>
+
+<ol>
+<li>让每个程序做好一件事。如果有新任务，就重新开始，不要往原程序中加入新功能而搞得复杂。</li>
+<li>假定每个程序的输出都会成为另一个程序的输入，哪怕那个程序还是未知的。输出中不要有无关的信息干扰。避免使用严格的分栏格式和二进制格式输入。不要坚持使用交互式输入。</li>
+<li>尽可能早的将设计和编译好的软件投入试用，哪怕是操作系统也不例外，理想情况下，应该是几星期内。对拙劣的代码毫不犹豫，丢掉重写！</li>
+<li>优先使用工具而不是拙劣的帮助来减轻编程任务的负担。工欲善其事，必先利其器。</li>
+</ol>
+
+
+<p> 总结为：一个程序只做一件事，并做好！程序要协作。程序要能处理文本流，因为这是最通用的接口。</p>
+
+<h3>Rob Pike 《Notes on C Programming》</h3>
+
+<ul>
+<li>原则1：你无法确定程序会在什么地方耗费运行时间。瓶颈经常出现在想不到的地方，所以别急于找个地方改代码，除非你已经证实那儿就是瓶颈所在。</li>
+<li>原则2：估量。在你没对代码进行估量，特别是没找到最耗时的那部分之前，别去优化速度。</li>
+<li>原则3：花哨的算法在n很小时通常很慢，而n通常很小。花哨算法的常熟复杂度很大。除非你确定n很大，否则不要用花哨的算法(即使n很大，优先考虑原则2)</li>
+<li>原则4：花哨的算法比简单的算法更容易出bug，更难实现。尽量使用简单的算法配合简单的数据结构。</li>
+<li>原则5：数据压倒一切。如果已经选择了正确的数据结构并且把一切都组织的井井有条，正确的算法也不言自明。编程的核心是数据结构，而不是算法。</li>
+<li>原则6：没有原则6。</li>
+</ul>
+
+
+<h3>原则概括：</h3>
+
+<ol>
+<li>模块原则：使用简洁的接口拼接简单的部件。</li>
+<li>清晰原则：清晰胜于技巧</li>
+<li>组合原则：设计时考虑拼接组合</li>
+<li>分离原则：策略同机制分离，接口同引擎分离</li>
+<li>简洁原则：设计要简洁，复杂度能低就低</li>
+<li>吝啬原则：除非确无他法，不要编写庞大的原则</li>
+<li>透明性原则：设计要可见，以便审查和调试</li>
+<li>健壮原则: 健壮源于透明与简洁</li>
+<li>表示原则：把知识叠入数据以求逻辑质朴而健壮</li>
+<li>通俗原则：接口设计避免标新立异</li>
+<li>缄默原则：如果一个程序没什么好说的，就沉默</li>
+<li>补救原则：出现异常时，马上退出并给出足够的错误信息</li>
+<li>经济原则：宁花机器一分，不花程序员一秒</li>
+<li>生成原则：避免手工hack,尽量编写程序去生成程序</li>
+</ol>
+
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,881 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: reading | ShareCore]]></title>
+  <link href="http://sharecore.info/blog/categories/reading/atom.xml" rel="self"/>
+  <link href="http://sharecore.info/"/>
+  <updated>2014-01-14T09:29:10+08:00</updated>
+  <id>http://sharecore.info/</id>
+  <author>
+    <name><![CDATA[Justin Huang]]></name>
+    <email><![CDATA[justinhuang917@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[2013/06/02周阅读笔记]]></title>
+    <link href="http://sharecore.info/blog/2013/06/02/20130602weeklyreading/"/>
+    <updated>2013-06-02T23:16:00+08:00</updated>
+    <id>http://sharecore.info/blog/2013/06/02/20130602weeklyreading</id>
+    <content type="html"><![CDATA[<h2>技术</h2>
+
+<h3>网络协议</h3>
+
+<h4>邮件服务器的功能与原理</h4>
+
+<p><a href="http://linux.vbird.org/linux_server/0380mail.php">来源</a></p>
+
+<p>传送阶段图示</p>
+
+<p><img src="https://github.com/JustinHuang917/notes/blob/master/images/mail_comps.gif?raw=true" alt="传送阶段图示" /></p>
+
+<p><strong>MUA</strong>
+ Mail User Agent，邮件用户代理，比如Linux下的Kmail,Windows下的Outlook。 主要功能是接收邮件服务器上的Email，以及提供浏览和编写邮件的功能。</p>
+
+<p><strong>MTA</strong>
+ Mail Transfer Agent，邮件传输代理。主要功能有：</p>
+
+<ul>
+<li><p>接收邮件：使用简单邮件传输协议(SMTP)
+MTA 服务器最主要的功能就是：将來自用戶端或者是其他 MTA 的來信收下來，这个时候 MTA 使用的是 Simple Mail Transfer Protocol (SMTP)，他使用port：25</p></li>
+<li><p>传递信件：
+如果该封信件的目的地不是本身的用户，且该封信的相关资料符合使用 MTA的权限， 那MTA 就会将该邮件传送到下一部邮件服务器。这就是所谓的传递 (Relay) 的功能。</p></li>
+</ul>
+
+
+<p>一般提到的Mail Server即指MTA，用于作MTA的软件主要有老牌的SendMail以及后起的Postfix</p>
+
+<p><strong>MDA</strong></p>
+
+<p>Mail Delivery Agent,邮件传递代理。它是MTA下的一个程序，用于提供分析邮件信息，来决定邮件去向的功能。它也可以提供垃圾邮件过滤，自动回复等功能。</p>
+
+<p><strong>Mailbox</strong></p>
+
+<p>即邮件信箱，存放用户的邮件，Linux下默认存放于/var/spool/mail/帐号 下。若MTA所收到的信件是本机的使用者，MDA就将信件送到该mailbox当中去。</p>
+
+<p>接收阶段图示</p>
+
+<p><img src="https://raw.github.com/JustinHuang917/notes/master/images/mail_comps_mra.gif" alt="接收阶段图示" /></p>
+
+<p><strong>MRA</strong></p>
+
+<p>Mail Retrieval Agent ,邮件接收代理，MRA使用邮件服务协议（POP:Post Office Protocol） 来使用户接收邮件，也可以通过IMAP(Internet Message Access Protocol)协议来将自己的邮件保存到邮件服务器上，并可以进一步建立资料夹等操作。</p>
+
+<p>POP3（Post Office Protocol version 3）的收信方式：</p>
+
+<ul>
+<li>MUA透过POP3，连接到MRA的Port 110，并输入用户名和密码来取得授权</li>
+<li>MRA确认MRA输入的用户名和密码没问题后，会前往使用者的Mailbox(/var/spool/mail/使用者帐号)下取得邮件，并传送回给MUA</li>
+<li>当所有邮件接收完后，<strong>MRA会删除使用者Mailbox里的资料</strong></li>
+</ul>
+
+
+<p>由于POP3会将Mailbox里的资料删除，IMAP可协助将Mailbox的资料转存到服务器上的Home目录（/home/帐号）下,邮件的分类和资料夹建立也是通过IMAP来完成。</p>
+
+<p>综上，要架设MRA+MTA，至少需要启动POP+SMTP两个协议才行。</p>
+
+<p><strong>邮件传递（Relay）：</strong></p>
+
+<p>Relay指的是邮件从一个MTA传递到另外一个MTA，当邮件目标不在同一个主机时，需要Relay。
+如果都可以借由这一部MTA进行Relay时，这个情况称为“Open Relay”，Open Relay有比较大的安全隐患，一般不开启。</p>
+
+<!--more-->
+
+
+<h3>《深入理解计算机系统》——存储器层次结构</h3>
+
+<p><strong>存储器的不同层次对性能的影响：</strong></p>
+
+<p>当程序需要访问的数据存储在CPU的寄存器中，那么在指令执行期间，在零个周期内就能访问到它们；如果存储在高速缓存，需要1-30个周期；如果存储在猪存中，需要50-200个周期；如果存储在磁盘上，需要大约几千万个周期。</p>
+
+<p><strong>RAM（Random-Access Memory）随机访问存储器</strong>
+SRAM：静态随机访问存储器——高速缓存
+DRAM：动态随机访问存储器——主存</p>
+
+<p><strong>存储器层次结构：</strong></p>
+
+<p><img src="https://raw.github.com/JustinHuang917/notes/master/images/store_level_structure.jpg" alt="存储器层次结构" /></p>
+
+<p><strong>局部性：</strong></p>
+
+<p>局部性好的例子
+``` c
+int sumarrayrows(int a[m][n])
+｛</p>
+
+<pre><code>int i,j,sum=0;
+for(i=0;i&lt;M;i++){
+    for(j=0;j&lt;N;j++){
+        sum+=a[i][j];
+    }
+}
+return sum;
+</code></pre>
+
+<p>｝
+<code>
+空间局部性差的例子：
+</code> c
+int sumarrayrows(int a[m][n])
+｛</p>
+
+<pre><code>int i,j,sum=0;
+for(j=0;j&lt;M;i++){
+    for(i=0;i&lt;N;j++){
+        sum+=a[i][j];
+    }
+}
+return sum;
+</code></pre>
+
+<p>｝
+```</p>
+
+<h3>Go并发模式进阶的一个例子代码：</h3>
+
+<p>``` go
+package main</p>
+
+<p>import (</p>
+
+<pre><code>//  "errors"
+"fmt"
+"math/rand"
+"time"
+</code></pre>
+
+<p>)</p>
+
+<p>type Item struct {</p>
+
+<pre><code>Title, Channel, GUID string
+</code></pre>
+
+<p>}
+type Fetcher interface {</p>
+
+<pre><code>Fetch() (tems []Item, next time.Time, err error)
+</code></pre>
+
+<p>}
+type Subscription interface {</p>
+
+<pre><code>Update() &lt;-chan Item
+Close() error
+</code></pre>
+
+<p>}</p>
+
+<p>type FakeFether struct {</p>
+
+<pre><code>channel string
+items   []Item
+</code></pre>
+
+<p>}</p>
+
+<p>func (f *FakeFether) Fetch() (items []Item, next time.Time, err error) {</p>
+
+<pre><code>now := time.Now()
+next = now.Add(time.Duration(rand.Intn(5)) * 500 * time.Millisecond)
+item := Item{
+    Channel: f.channel,
+    Title:   fmt.Sprintf("Item %d", len(f.items)),
+}
+item.GUID = item.Channel + "/" + item.Title
+f.items = append(f.items, item)
+items = []Item{item}
+return
+</code></pre>
+
+<p>}</p>
+
+<p>type AdvSub struct {</p>
+
+<pre><code>closed  bool
+err     error
+updates chan Item
+fetcher Fetcher
+closing chan chan error
+</code></pre>
+
+<p>}</p>
+
+<p>func (s *AdvSub) Close() error {</p>
+
+<pre><code>errc := make(chan error)
+fmt.Println("closing")
+s.closing &lt;- errc // HLchan
+return &lt;-errc     // HLchan
+</code></pre>
+
+<p>}
+func (s *AdvSub) Update() &lt;-chan Item {</p>
+
+<pre><code>return s.updates
+</code></pre>
+
+<p>}
+func (s *AdvSub) loop() {</p>
+
+<pre><code>const maxPending = 10
+type fetchResult struct {
+    fetched []Item
+    next    time.Time
+    err     error
+}
+var fetchDone chan fetchResult
+var pending []Item
+var next time.Time
+var err error
+var seen = make(map[string]bool)
+for {
+    var fetchDelay time.Duration
+    if now := time.Now(); next.After(now) {
+        fetchDelay = next.Sub(now)
+    }
+    var startFetch &lt;-chan time.Time
+    if fetchDone == nil &amp;&amp; len(pending) &lt; maxPending {
+        startFetch = time.After(fetchDelay) // enable fetch case
+    }
+    var first Item
+    var updates chan Item
+    if len(pending) &gt; 0 {
+        first = pending[0]
+        updates = s.updates // enable send case
+    }
+    select {
+    case &lt;-startFetch:
+        fetchDone = make(chan fetchResult, 1)
+        go func() {
+            fetched, next, err := s.fetcher.Fetch()
+            fetchDone &lt;- fetchResult{fetched, next, err}
+        }()
+    case result := &lt;-fetchDone:
+        fetchDone = nil
+        fetched := result.fetched
+        next, err = result.next, result.err
+        if err != nil {
+            next = time.Now().Add(1 * time.Second)
+            break
+        }
+        for _, item := range fetched {
+            if id := item.GUID; !seen[id] { // HLdupe
+                pending = append(pending, item)
+                seen[id] = true
+            }
+        }
+    case errc := &lt;-s.closing:
+        errc &lt;- err
+        close(s.updates)
+        return
+    case updates &lt;- first:
+        pending = pending[1:]
+    }
+}
+</code></pre>
+
+<p>}</p>
+
+<p>type AdvMerge struct {</p>
+
+<pre><code>subs    []Subscription
+updates chan Item
+quit    chan struct{}
+errs    chan error
+</code></pre>
+
+<p>}</p>
+
+<p>func (m *AdvMerge) Close() (err error) {</p>
+
+<pre><code>close(m.quit)
+for _ = range m.subs {
+    if e := &lt;-m.errs; e != nil {
+        err = e
+    }
+}
+close(m.updates)
+return
+</code></pre>
+
+<p>}</p>
+
+<p>func (m *AdvMerge) Update() &lt;-chan Item {</p>
+
+<pre><code>return m.updates
+</code></pre>
+
+<p>}
+func Merge(subs ...Subscription) Subscription {</p>
+
+<pre><code>m := &amp;AdvMerge{
+    subs:    subs,
+    updates: make(chan Item),
+    quit:    make(chan struct{}),
+    errs:    make(chan error),
+}
+for _, sub := range subs {
+    go func(s Subscription) {
+        for {
+            var it Item
+            select {
+            case it = &lt;-s.Update():
+            case &lt;-m.quit:
+                m.errs &lt;- s.Close()
+                return
+            }
+            select {
+            case m.updates &lt;- it:
+            case &lt;-m.quit:
+                m.errs &lt;- s.Close()
+                return
+            }
+        }
+    }(sub)
+}
+return m
+</code></pre>
+
+<p>}</p>
+
+<p>func Subscripbe(fetcher Fetcher) Subscription {</p>
+
+<pre><code>s := &amp;AdvSub{
+    fetcher: fetcher,
+    updates: make(chan Item),
+    closing: make(chan chan error),
+}
+go s.loop()
+return s
+</code></pre>
+
+<p>}</p>
+
+<p>func main() {</p>
+
+<pre><code>fetcher1 := &amp;FakeFether{channel: "sharecore.info"}
+fetcher2 := &amp;FakeFether{channel: "blog.golang.org"}
+fetcher3 := &amp;FakeFether{channel: "googleblog.blogspot.com"}
+fetcher4 := &amp;FakeFether{channel: "googledevelopers.blogspot.com"}
+m := Merge(Subscripbe(fetcher1), Subscripbe(fetcher2), Subscripbe(fetcher3), Subscripbe(fetcher4))
+time.AfterFunc(3*time.Second, func() {
+    //fmt.Println("closed")
+    fmt.Println("closed:", m.Close())
+})
+for item := range m.Update() {
+    fmt.Println(item.Channel, item.Title)
+}
+//panic("show me the stacks")
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<hr />
+
+<h2>经济政治</h2>
+
+<h4>《激荡三十年》</h4>
+
+<h4>1982</h4>
+
+<p>在1981年，国营企业改革乏力，而刚刚萌芽的民营力量开始形成一股经济力量的时候，政府便本能地作出了<strong>对前者的保护和对后者遏制的反应</strong>，1982年，发生了“八大王事件”（个体经营者的投机倒把），“韩庆生事件”（出卖国营技术的投机倒把）。
+广东的改革在”打击走私“的情况下，继续进行着。</p>
+
+<p>中国企业改革进入死循环："一统就死，一死就叫，一叫就放，一放就乱，一乱就统"</p>
+
+<p>9月，中共十二大，确定“建设有中国特色社会主义”的国家战略。标记着彻底放弃“苏联式计划经济模式”，开始以“计划经济为主，市场经济为辅”的经济体制改革。</p>
+
+<hr />
+
+<h2>历史文化</h2>
+
+<h4>《全球通史》</h4>
+
+<h5>《扩张中的西方文化：文艺复兴和宗教改革》</h5>
+
+<p><strong>现代化</strong></p>
+
+<p><strong>经济学解释</strong>： 人类通过这一过程将增强对外部环境的控制能力作为提高人均产量的手段。</p>
+
+<p><strong>社会学和人类学解释</strong>：现代化的特真包括：对民众的唤醒和激发，对现在和未来比对过去的更大兴趣，一种把人类事务看成是可以理解而不是受超自然力量控制的趋势和直至近些年才建立起的对科学和技术的益处的信赖。</p>
+
+<p>文艺复兴时期：大约1350年-1600年。</p>
+
+<p><strong>文艺复兴时期艺术家和作家的赞助人不再是宗教神学，而是城市里的大商人家族。</strong>这些大商人家族的需求，兴趣和口味渲染了文艺复兴时期文化的复兴，也解释了文艺复兴时期现世注意和个人主义存在的原因————文艺复兴关心的是今世而不是来世；它关注的是非宗教的古典文化而不是基督教神学。</p>
+
+<p>大多数文艺复兴时期的艺术和文学关注的是人——文艺复兴时期的信任，他或她是自身命运的塑造者，而不是超自然力量的玩物。人们不需要专心与超自然力量，相反，生活的目的是为了发展自身所固有的潜能。</p>
+
+<p>马丁.路德领导德国宗教改革，<strong>他反对的是教会</strong>——即教会的宗教场所和宗教仪式不是个人与上帝之间的必要中介。最终在德国形成了天主教派和路德教派（新教徒）平分天下的局面。</p>
+
+<hr />
+
+<h2>其他</h2>
+
+<h4>《设计心理学》</h4>
+
+<p><strong>易理解性和易使用性的设计原则</strong></p>
+
+<ul>
+<li>提供一个好的概念模型</li>
+<li>可视性</li>
+<li>匹配原则</li>
+<li>反馈原则</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[2013/05/26周阅读笔记]]></title>
+    <link href="http://sharecore.info/blog/2013/05/26/20130526weeklyreading/"/>
+    <updated>2013-05-26T23:33:00+08:00</updated>
+    <id>http://sharecore.info/blog/2013/05/26/20130526weeklyreading</id>
+    <content type="html"><![CDATA[<h2>技术</h2>
+
+<h3>Golang</h3>
+
+<h4>Go 1.1 performance improvements</h4>
+
+<p><a href="http://dave.cheney.net/2013/05/21/go-1-1-performance-improvements">来源</a></p>
+
+<p><strong>Go 1.1 性能改进的几个点</strong></p>
+
+<ul>
+<li>Code generation improvements across all three gc compilers, including better register allocation, reduction in redundant indirect loads, and reduced code size.</li>
+<li>Improvements to inlining, including inlining of some builtin function calls and compiler generated stub methods when dealing with interface conversions.
+Reduction in stack usage, which reduces pressure on stack size, leading to fewer stack splits.</li>
+<li>Introduction of a parallel garbage collector. The collector remains mark and sweep, but the phases can now utillise all CPUs.</li>
+<li>More precise garbage collection, which reduces the size of the heap, leading to lower GC pause times.</li>
+<li>A new runtime scheduler which can make better decisions when scheduling goroutines.</li>
+<li>Tighter integration of the scheduler with the net package, leading to significantly decreased packet processing latencies and higher throughput.</li>
+<li>Parts of the runtime and standard library have been rewritten in assembly to take advantage of specific bulk move or crypto instructions.</li>
+</ul>
+
+
+<h4>Go高级并发模式</h4>
+
+<p><a href="http://talks.golang.org/2013/advconc.slide#1">Advanced Go Concurrency Patterns</a></p>
+
+<h3>JavaScript</h3>
+
+<h4>柯里化(Curry)</h4>
+
+<p><a href="http://slid.es/gsklee/functional-programming-in-5-minutes">来源</a></p>
+
+<p>原函数:f(x,y)=x+y
+``` javascript
+function f(x,y){</p>
+
+<pre><code>return x+y;
+</code></pre>
+
+<p>}
+<code>
+柯里化后：g(x)=y-&gt;f(x+y),单个参数的函数链
+</code> javascript
+function g(x){</p>
+
+<pre><code>return function(y){
+    return x+y;
+}
+</code></pre>
+
+<p>}
+<code>
+可得：
+</code> javascript
+f(1,2)===g(1)(2);
+<code>
+更普通做法:
+</code> javascript
+function g(h)｛</p>
+
+<pre><code>return function(y){
+    return h(h(y));
+}
+</code></pre>
+
+<p>｝
+<code>
+可得:
+</code> javascript
+81===g(function(x){</p>
+
+<pre><code>return x*x;
+</code></pre>
+
+<p>})(3);
+```</p>
+
+<!--more-->
+
+
+<hr />
+
+<h2>互联网文化</h2>
+
+<h3>社交网络</h3>
+
+<h4><a href="http://www.ituring.com.cn/article/40499">《小圈子.大社交》读书笔记和摘要</a></h4>
+
+<p><strong>Paul Adams在社交网络和社交行为方面的最新研究</strong></p>
+
+<p>Paul Adams 一开始就强调，我们要关注的是人，不是在于技术或是内容，而是围绕在人以及人的行为。不只是今天，他从久远的科技演进谈起，以前的字母，报纸，电报，电视等，当报纸出现的时候，其实就已经是一种隐私权受到挑战的时候，人们发现他们说过的话是会被写下来且再复制让很多人知道。手机发明时，人们一开始也觉得并不需要让其他人随时找到，后来却仰赖起要有手机的生活。当电报出现时曾被认为是报纸杀手，而社群媒体的出现也是有类似的反应。科技发展地很快，但人们却是很慢地去适应使用它。</p>
+
+<p>人的这些社交行为都已经有几千年之久的历史，要让产品或是品牌成功，要找的是社会学专家多研究人，而不是技术厉害的人。</p>
+
+<p>人们活在网络里(People live in networks)，人们是在说话，而不是分享(Why People not share, but talk)</p>
+
+<p><strong><em>为什么要说话?</em></strong>
+* 让生活更好过，比如说我们讨论哪里可以买食物，某个地方的天气型态是怎么样。
+* 为了建立关系，我们不是为了说什么而说，是因为「要跟谁说」。
+* 为了互相帮助。人们本来就乐于不求回报地帮助别人。
+* 为了取得身分认同，让别人定义与认同我们是怎样的人。</p>
+
+<p><strong><em>那人们都说什么呢?</em></strong></p>
+
+<ul>
+<li>谈论其他人，而且他们大部分时候都不在场。八卦就是一个例子。</li>
+<li>周遭环境的事情，比如说听到背景正在放的一首歌就开始谈论如何喜欢那位歌手以及看他演出的经验。</li>
+<li>分享「感受」多过于「事实」。可以从纽约时报的「最常被转寄的新闻」以及「最常被流览新闻」可以看出端倪。会引起正面或是负面情绪的内容远比教人们如何减肥以及介绍科技先产品的内容容易被分享。这可能是猫咪影片总是很受欢迎的原因。</li>
+<li>不经意地提到品牌。并不是刻意坐下来要讨论某一个品牌，而是在跟朋友聊天时可能会带到，昨天跟哪几个朋友去星巴克聚会，喝到某个饮料很好喝之类的。</li>
+</ul>
+
+
+<p><strong><em>怎么进行社交媒体营销?</em></strong></p>
+
+<p>信息变多了但人的脑容量很有限。</p>
+
+<ul>
+<li>要去针对为一群群小团体的人制造经验，而不是像电视一样大量地传播讯息。</li>
+<li>其次是要建立很多次但轻的互动，比如说认识一个新朋友，需要花很多时间去互动了解，见面好几次之后可能才会找到共同兴趣而有更进一层的关系。在社群媒体上经营跟消费者的关系也是如此。</li>
+</ul>
+
+
+<p>我们的设计网络工具必须要认识到这些联系的强度，我们与一些人有着比另外一些人更密切的联系。我们应该适应这些知识。</p>
+
+<p><strong><em>有三种关系类型：</em></strong></p>
+
+<ul>
+<li><p>强关系：人们彼此非常关心
+强关系就是你最关心的人。人们的强关系通常指的是在“信任的圈子”里的人。强关系的人通常对朋友的决定发挥着重要影响。大部分人只有很少的强关系，一般少于10个。绝大数量的社交网络使用发生在强关系之间</p></li>
+<li><p>弱关系：人们的联系很稀松，像朋友的朋友
+弱关系是指你认识但关注很少的人。他们和你联系的很少。弱关系指你们困同一个电梯里，你不会感到不舒服，但也不会感到非常亲近的人。</p></li>
+<li><p>暂时性关系：人们彼此不认识，但临时地联系过
+暂时性关系是存在的，但是网络把他们推向了前面。想想我们只交谈过一次的人。事实上你不认识他们。暂时性关系在线上比线下更常见。他们和你没有公认的关系，只是为了某个特殊原因而暂时性的交流。一旦任务结束，暂时性关系就不会再联系了。除了他们打的字，你并不了解他们，不管他们有什么样的网络资料。由于在线用户产生内容的增长，暂时性关系变得越来越重要。</p></li>
+</ul>
+
+
+<p>人们有时和暂时性关系交流是由于一种信息需求。暂时性联系也存在于当然们需要临时的交流来完成意向工作。</p>
+
+<hr />
+
+<h2>历史文化</h2>
+
+<h4>《全球通史》</h4>
+
+<h5>《西方扩张时的儒家世界》</h5>
+
+<p>中国文明具有内聚性连续性，中国文明实际上是世界上最古老的，未曾中断的文明。之所以具有这种连续性，原因有以下几个：</p>
+
+<ul>
+<li><strong>地理方面，与人类的其他伟大文明相隔绝的程度举世无双。</strong>地中海将美索不达米亚，埃及，系列和罗马连接在一次，印度洋使印度与中东，非洲和东南亚相互影响，而中国有史以来的大部分时间里，四面被山脉，沙漠和辽阔的太平洋所隔断。</li>
+<li><strong>中国的人口庞大无比，有助于文明的连续性。</strong> 巨大无比的人力资源，能使得中国人不管事态的发展如何，始终保持自己的特点。被蒙／满征服和统治和西方打击破坏，但最终，由于人数和文化上的优势，总能同化或驱逐入侵者。（此点可对比日耳曼人入侵欧洲和穆斯林进入印度／中东时所带来的打规模变革）。</li>
+<li><strong>古老的，可追溯打数千年钱的一种书面语——汉字——的存在</strong>。对比欧洲的文字种类可知。同时在此书面语上建立起的科举考试制度，一方面为中国提供了一种赢得欧洲人尊敬和羡慕的，有效稳定的行政制度，另一方面，也正是这一制度扼杀了创造力，培育了一味顺从的性格。</li>
+<li><strong>形成内聚性的最重要因素，也许是通称为儒家学说的道德准则和文学，思想方面的遗产。</strong></li>
+</ul>
+
+
+<p>日本吸收中国文明
+日本人基本属于从东北亚移民的蒙古人种，但其种族的形成也得力与原先居住与日本诸岛的高加索人种的虾夷人，以及南洋的马来人和波利尼西亚人。</p>
+
+<p>1603年，德川加康建立德川幕府，对全日本统治一直延续到1868年王政复古和明治维信开始。德川统一期间与之前，日本主要受中国文明(儒家文化)影响。</p>
+
+<p>德川统治期间，日本的三个社会等阶：<strong>贵族>农民>手工业者／商人。</strong></p>
+
+<p>日本的家庭制度，尤其是武士制度，由于服从于幕府将军或大名的利益而与社会紧密地融为一体。家庭和国家之间的和谐远远超过中国，从而为民族团结和民族活动提供了根本基础，便利了日本19世纪的明治维新。</p>
+
+<hr />
+
+<h2>经济政治</h2>
+
+<h4>《激荡三十年》</h4>
+
+<h5>1980</h5>
+
+<ul>
+<li>刘少奇平反，胡耀邦上台。</li>
+<li>深圳特区成立，时任广东省委书记是习仲勋。当初特区成立，只有3000W贷款，政府靠卖地筹款。第一个商业楼盘是港商投资的“东湖丽苑”。</li>
+<li>“渤海2号”钻井船翻沉事件的高调处理，成为一件冲击观念和人文反思的事件。</li>
+<li>东南沿海的福建和浙江，靠走私完成灰色的原始积累。</li>
+<li>政府资助北京市第一家个体饭店。</li>
+<li>四川人科学家陈春先开始建设中关村</li>
+</ul>
+
+
+<h4>1981</h4>
+
+<ul>
+<li>1979，1980连续两年出现巨额财政赤字，中央调整政策，采取改革紧刹车。</li>
+<li>两位改革派的地方主导者：任仲夷——广东，项南——福建。</li>
+</ul>
+
+
+<hr />
+
+<h2>其他</h2>
+
+<h3>《影响力》：北美野牛</h3>
+
+<p>北美野牛特别容易受同伴影响，成群狂奔。因为它们的眼睛长在脑门两侧，看前难，看两边容易；而且它们奔跑的姿势是低着头，牛角冲在最前面，这样就看不到前方。印第安人捕猎时，把牛群骗到悬崖边，然后将领头的牛推下悬崖，其他牛就会跟着跳下去。</p>
+
+<p>Jusitn:作为领导者，要区分被你领导的，哪些是有“长在前面的眼睛”的，哪些是只有“长在两侧的眼睛”的，分别给他们不同的角色。作为被领导者，要努力“让眼睛长在前面”，不是一味的只看到自己的同伴，而是要超越自己所处的集群，往前看。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Reread 《Rework》]]></title>
+    <link href="http://sharecore.info/blog/2013/05/22/reread-rework/"/>
+    <updated>2013-05-22T09:35:00+08:00</updated>
+    <id>http://sharecore.info/blog/2013/05/22/reread-rework</id>
+    <content type="html"><![CDATA[<p>最近身边很多人读《Rework》,我被带动，又重新读了和思考了这本书。</p>
+
+<p>没记错的话，我差不多是两年多前读的《Rework》一书，到现在为止，应该不少于5次的向身边的朋友或者同事们推荐过这本书，书在我读完后，就一直处于外借中，上周才重新回到我的手里。
+还记得在现在这家公司的第一次知识分享(我讲的MVC框架),就在Slides的开始，贴上了这本书，最近，发现这本书在身边火热，甚是感到开心。</p>
+
+<p>其实这本书能火，我想主要是因为这本书中的话，能让每一个人，尤其是Geek们，找到很多很多的共鸣。我本人比较印象深刻的就有下面几点：</p>
+
+<ul>
+<li><strong>不要过早的纠结细节</strong></li>
+</ul>
+
+
+<p> <em>你需要用同样的方法处理你的想法。细节决定不同。 但是过早的纠结于细节会导致异议，会议和延期。 你迷失在不重要的事物中。你浪费时间在易变中。所以忽略细节。 首先抓住基础的，然后才是特殊的。</em></p>
+
+<p>这个观点，对于程序员是最有用的。一个程序的实现，要是定义好了边界，接口，那细节的实现就是水到渠成的事情了。而如果一开始就将你的思维定位在细节的实现上，你将陷于泥潭。当然，要做到这一点，也需要有比较有广度的知识。如果一个人的知识面过于局限，他的思维肯定也就被锁在他所擅长的细节思考上。逃避自己不擅长的，人之本性吗。</p>
+
+<ul>
+<li><strong>速战速决</strong></li>
+</ul>
+
+
+<p><em>乘势而为才能动力十足。良好的态势能让你坚持下去，能驱动你成长。没有“势”的推动，你哪儿也去不了。如果你目前所做的工作无法给你的事业带来动力，那可不太好。</em></p>
+
+<p>写了多年代码了，现在回想起来，那些能让我印象深刻的编程经验或者解决方案，几乎都是在某一个周末一口气来完成的。这些“一口气”完成的代码，带来的生产力肯定超过我半个月的代码生产力。这种顺势而为，除了是一个效率问题。还更是一个灵感问题，印象深刻的是，当初我将从Erlang里学来的Actor模型，用来解决企业MRP计算问题的灵感，就是在这种“势”下产生的。</p>
+
+<ul>
+<li><strong>人人都得干活</strong></li>
+</ul>
+
+
+<p><em>每一个小团队里，你需要的是干活的人，而不是监工，每个人都得做事，没有人可以袖手旁观。
+这句话，不做太多解释，只说点小消息：Mark Zuckerberg还偶尔写写代码，写《Rework》的大牛DHH，还经常在github上贡献代码，不信你看看 <a href="https://github.com/dhh?tab=activity">https://github.com/dhh?tab=activity</a>。</em></p>
+
+<ul>
+<li><strong>一夜成名只是传说</strong></li>
+</ul>
+
+
+<p><em>你不会瞬间大红大紫，也不会一夜暴富，你所了解的那些道听途说的“一夜成名”的故事，深挖一点，你就能发现这些成功人士在到达引爆点之前，都已经在这个方向 上苦熬了很长时间。</em></p>
+
+<p>Bill,Zark, DHH，Linus 这些大牛们，我们或许只有膜拜的份，除了膜拜，或许还有一些羡慕嫉妒以及对自身的抱怨。其实别忘了，这些大牛们成名前，是经过多少经历与磨难，他们自己付出过多少的代价与精力。有句话说的好，最怕的不是牛人，怕的牛人比你还更努力。life is tough。</p>
+
+<p>好了，先说这么多，说，其实没啥作用，还得看怎么做。正如Linus所言：Talk is cheap,show me the code!</p>
+
+<p>同时在此也再推荐两本书:《人月神话》+《人件》,对了解软件开发的本质难题有效。</p>
+
+<p>小道消息:DHH正在写本新书，叫《Remote》,说的是office not required。<a href="http://37signals.com/remote">http://37signals.com/remote</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[2013/05/19周阅读笔记]]></title>
+    <link href="http://sharecore.info/blog/2013/05/19/20130519weeklyreading/"/>
+    <updated>2013-05-19T23:35:00+08:00</updated>
+    <id>http://sharecore.info/blog/2013/05/19/20130519weeklyreading</id>
+    <content type="html"><![CDATA[<h2>技术</h2>
+
+<h3>网络协议</h3>
+
+<h4>TCP的可靠传输</h4>
+
+<p><a href="http://www.cnblogs.com/vamei/archive/2012/12/08/2805252.html">来源</a></p>
+
+<ul>
+<li>TCP使用流通信，确保数据到达的顺序与文本流顺序相符。</li>
+<li>TCP协议是基于IP协议的，所以最终数据传送还是以IP数据包为单位进行的。TCP协议封装到IP包的不是整个文本流，而是TCP协议所规定的片段(segment)。</li>
+<li>TCP片段的头部(header)会存有该片段的序号(sequence number)，以保证顺序传输。</li>
+<li>通过接收方返回ACK(Acknowlage)来保证确保传输，ACK是是接收到的Segament的序号加1.</li>
+<li>通过滑窗（Sliding widdow）来提高可靠传输的效率</li>
+<li>在TCP连接中，我们通过将ACK回复“附着”在其他数据片段的方式，减少了ACK回复所消耗的流量。并通过累计ACK的形式（如下图）来减少回传ACK。</li>
+</ul>
+
+
+<p><img src="http://pic002.cnblogs.com/images/2012/413416/2012121810112991.png" alt="累计ACK" /></p>
+
+<h4>TCP连接的建立</h4>
+
+<p><a href="http://www.cnblogs.com/vamei/archive/2012/12/16/2812188.html">来源</a></p>
+
+<p>在TCP协议与"流"通信中讨论的TCP传输需要一个前提：TCP连接已经建立。然而，TCP连接从无到有需要一个建立连接的过程。建立连接的最重要目是让连接的双方<strong>交换初始序号</strong>(ISN, Initial Sequence Number)。根据TCP协议的规定，文本流的第一个片段的序号不能是确定的数字(比如说1)。连接的双方各自随机生成自己的ISN，然后再利用的一定方式让对方了解。这样的规定是出于TCP连接安全考虑：如果以一个确定的数字作为初始的TCP序号，那么其他人很容易猜出接下来的序列号，并按照正确的序号发送“伪装”的TCP片段，以插入到文本流中。</p>
+
+<p>ISN交换是通过SYN片段实现的。SYN片段由头部的SYN位表明，它的序号为发送方的ISN。该片段由连接的一方首先发给给另一方，我们将发送SYN的一方称为客户(client)，而接收SYN的一方称为服务器(server)。我们使用ISN(c)表示client一方的ISN，使用ISN(s)表示server一方的ISN。随后，接收到SYN的server需要回复ACK，并发送出包含有server的ISN的SYN片段。下图为建立连接的过程，也就是经典的TCP三次握手(three-way handshaking)。两条竖直线分别为client和server的时间轴。每个箭头代表了一次TCP片段的单向传输。</p>
+
+<p><img src="http://pic002.cnblogs.com/images/2012/413416/2012121613121477.png" alt="TCP三次握手 建立连接" />
+<img src="http://pic002.cnblogs.com/images/2012/413416/2012121613071544.png" alt="TCP四次握手终止连接" /></p>
+
+<h4>TCP堵塞控制</h4>
+
+<p><a href="http://www.cnblogs.com/vamei/archive/2013/01/10/2850199.html">来源</a></p>
+
+<p>TCP通过两种方式来推测TCP片段丢失：<strong>ACK超时和ACK重传</strong>，一旦<strong>发送方认为TCP片段丢失</strong>，则认为网络中出现堵塞。
+出现堵塞时，TCP协议通过<strong>控制滑窗(sliding window)大小</strong>来控制发送速率。TCP还会维护一个<strong>congestion window size</strong>，以根据网络状况来调整滑窗大小。真实滑窗大小取这两个滑窗限制的最小值，从而同时满足两个限制 (流量控制和堵塞控制)。
+<img src="http://images.cnitblog.com/blog/413416/201301/09213603-4787f562826f4a87b273182d6dff1f1a.png" alt="Congestion Window" /></p>
+
+<!--more-->
+
+
+<hr />
+
+<h2>互联网文化</h2>
+
+<h4>网络社区</h4>
+
+<p><a href="http://www.cnblogs.com/vamei/archive/2013/05/18/3084911.html">来源</a>
+<strong>技术是无法解决自身可能引发的道德问题的。</strong> 3D打印机也不会发出这样的警示: 你要打印的是一支枪，这太不好，请停止，否则我要自爆！计算机和互联网推动了知识的传播和信息的自由，但同时也带了道德层面的问题: 3D打印枪的蓝图这样的资料是否可以借助互联网传播？(事实上，这份蓝图在下线之前已经有了超过10万次的下载)类似的问题有很多: 网络上的暴力内容和儿童色情，网络谣言和诽谤，网络攻击和隐私窃取…… 纯粹看技术本身，我们会觉得，技术带给我们一个疯狂的世界，旧的美好会最终被技术的汹涌潮流摧毁。</p>
+
+<p>然而，技术是离不开人的。技术的革命已经许多次的冲击人类历史。人们最初都会对新技术感到困惑和畏惧。想象一下，工业革命时进城的农民看到轰隆隆的大机器，二战时的普通人读到新闻报道中核弹的威力。<strong>恐惧和躲避是人面对新事物的本能动作，直到有一天(集体的)人担负起自己的责任，摆脱恐惧，努力的用经验和智慧来解决问题，技术才算是真正的被驯服。</strong> 现在的社会才会有了联合国(国际争端)、WTO(贸易)、反核扩散协定(核武器)这样的现代防御机制，来避免技术可能带来的集体毁灭。</p>
+
+<hr />
+
+<h2>经济政治</h2>
+
+<h4>《激荡三十年》</h4>
+
+<h5>1978</h5>
+
+<p>安徽凤阳县小岗村包产到户——<strong>中国农村改革的第一枪。</strong></p>
+
+<p>吴仁宝与华西村（江苏江阴县），鲁冠球与大邱庄（天津静海县）———<strong>中国乡镇企业的“双子星座”</strong></p>
+
+<h6>1979</h6>
+
+<p>霍英东在广州投资盖国内第一家五星级酒店——<strong>白天鹅宾馆</strong>。他当初投资时的段子:
+"当时投资内地，就怕政策突变。那一年，首都机场出现了一幅体现少数民族节庆的壁画，其中一个少女是裸体的，这在国内引起很大一场争论。我每次到北京都要先看看这幅化还在不在，如果在，我心里比较踏实。"</p>
+
+<p>皮尔.卡丹进入中国</p>
+
+<p>松下幸之助受邓小平之邀访问中国</p>
+
+<p>周冠五改革首钢</p>
+
+<p>“傻子瓜子“年广久事件——年广久雇佣12个工人为其工作，引起全国关于”个体经济“与”资本主义经济“的大讨论，因为马克思在《资本论》中有一个著名论断：<strong>“雇工超过了8个就不是个体经济，而是资本主义经济，是剥削”。</strong></p>
+
+<p><strong>袁庚：深圳蛇口工业区：</strong></p>
+
+<p>招商局，李鸿章1872年创办，当时，与江南制造总局，纺织新局是清政府最大的三家国有企业。招商局的招牌一直存流与民国与新中国。</p>
+
+<p>袁庚以招商局名义建立了蛇口工业区。并从中央获取了两项权力：
+一是可以自主审批500万美元以下的工业项目。
+二是被允许向外资银行举债。</p>
+
+<p>蛇口工业区开立中国建立“特区”的先河，盛极一时。但最终随袁退休后，衰败。最后，蛇口下属的三个公司走出体制外:一家是招商银行(它的前身是蛇口工业区内部结算中心)；一家是平安保险公司，当家人是袁庚的司机马明哲；还有一家是南山(港口)开发公司。</p>
+
+<p>牟其中词《虞美人》:</p>
+
+<blockquote><p>九人踏雾入山来，重登太白岩。一层断瓦一层草，不似当年风光好。垣颓柱斜庙已败，何须再徘徊。圆去瑶池取玉柱，莫道大好河山无人顾。</p></blockquote>
+
+<hr />
+
+<h2>历史文化</h2>
+
+<h4>《全球通史》</h4>
+
+<h5>《西方扩展时的穆斯林世界》</h5>
+
+<p>伊斯兰教的仪式与《古兰经》的规训一起，不但提供了一种宗教信仰。而且提供了一直社会法规与政治体系，有助于团结当时还很涣散的诸阿拉伯民族。</p>
+
+<p>公元632年，穆罕默德去世，阿拉伯人冲出阿拉伯半岛，迅速扩张到中东的拜占廷帝国和萨珊王朝，
+然后向东扩展到中国，向西方穿过北非，进入西班牙。</p>
+
+<p>穆斯林扩张后的三大帝国：
+<strong>地跨中东，北非和巴尔干半岛的奥思曼帝国。</strong> 建立这个帝国的是奥斯曼土耳其人，是来自中亚的突厥人的一支。于1071年的曼齐克尔特战役中大败拜占廷帝国，占领小亚西亚。科索沃战争中打败南斯拉夫军队，消灭塞尔维亚帝国。后又占领叙利亚和埃及，后跨过多瑙河击溃匈牙利君主国，以及最后占领波兰与乌克兰，形成横跨三大州的庞大帝国。其领袖是<strong>苏莱曼</strong></p>
+
+<p><strong>波斯的萨菲帝国。</strong>沙.伊斯梅尔一世统一了整个波斯，最杰出的国王是<strong>阿拔斯一世</strong>。</p>
+
+<p><strong>印度的莫卧儿帝国。</strong>突厥人南下三次南下入侵印度，最终由巴布尔建立莫卧儿帝国，在其孙子著名的阿克巴统治时，走向鼎盛。莫卧儿帝国与其他两个帝国不同的是，它是伊斯兰教和印度教混合的帝国，阿克巴当时平等对待印度教，在当时是了不起的胸怀与成就，也是使莫卧儿帝国走向鼎盛的重要原因。</p>
+
+<p>17世纪开始，三大帝国开始衰败，衰败的原因有一个根本解释：它缺乏欧洲的哦那个，它未经历当时正在使欧洲发生彻底变革的种种影响深远的，经济领域，农业，工业金融方法或商业组织等方面的变化。另外一个原因是穆斯林对西方有一种优越感，以为自己不可战胜；最后一个因素是土耳其人，波斯人和莫卧儿人都不是航海传统的民族，建立的都是陆上帝国。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[2012阅读回顾——读书篇]]></title>
+    <link href="http://sharecore.info/blog/2012/12/29/my-readed-books-in-2012/"/>
+    <updated>2012-12-29T09:38:00+08:00</updated>
+    <id>http://sharecore.info/blog/2012/12/29/my-readed-books-in-2012</id>
+    <content type="html"><![CDATA[<p>前段时间，Amazon的CTO，Werner Vogels在他的<a href="http://www.allthingsdistributed.com/2012/12/paper-readings-2012.html">博客</a>,列出了他2012读过的文章。尽管我跟他这样的大牛不是一个等级的，但是从他的推荐里还是收获不少！也由此冒出一个主意，我也可以把我2012年读过的东西，列出来，跟大家分享。或许也可以影响小小的一部分喜欢阅读的人！
+我把这个阅读回顾，分成了两个部分——书籍与资料。今天贴出书籍的部分，资料部分待整理！
+以下书籍我完全按印象的顺序来写，越往前面的，印象越深，推荐值也越高！</p>
+
+<h2>茨威格《人类的群星闪耀时》</h2>
+
+<p><img src="http://sharecore.info/images/2012books/renleiqunxinshanyaoshi.jpg" /></p>
+
+<p>很难想象，现在第一个出现在我脑海的是一本非技术书，这可能更体现了这本书对我的影响！茨威格，用他富有魅力的文字给我们讲述了12个历史闪光时刻，在他的文字里，我看到了发现太平洋的巴尔沃亚的英雄豪情，体会了音乐大师韩德尔一生的大起大落，可惜了葬送拿破仑的格鲁希将军的优柔寡断，追随了七十多岁的歌德的浪漫爱情，
+更在菲尔德，斯科特，列宁这些人的坚强的信念中，获得了无比的坚强的力量！如果，你跟我一样，在我这样的年纪，在奋斗着，我强烈建议你读这本书！它会改变你！这不是一本成功学，这是真正的历史！</p>
+
+<h2>Mike Gancarz《Linux/Unix设计思想》</h2>
+
+<p><img src="http://sharecore.info/images/2012books/linuxshejisixiang.jpg" /></p>
+
+<p>第二本书，是技术书了！这本书对我起两个作用：1.我现在的私人电脑OS已经完全由原来的Window换成Linux(Ubuntu)了。2.“简单设计”与“技术开放”的思想，深入我的骨髓，所有无比复杂的设计，给我第一感官绝对是：讨厌！ 所有封闭的技术，我做的第一件事：诅咒！（唉，有点激进了）。 不管如何，如果你想体会Linux/Unix的设计，此书正适合入门！</p>
+
+<h2>克莱.舍基 《认知盈余》</h2>
+
+<p><img src="http://sharecore.info/images/2012books/renzhiyingyu.jpg"/></p>
+
+<p>好吧，我承认，这本书第一次吸引是它的一条新闻：我的大老板给它写了序！（hey,boss,你写的序可没给我留下什么印象）。但读完本书，对我重新认识互联网的本质，有很大的帮助。拥有自由时间的知识分子们，缔造了互联网！也让更我肯定了一点求知与分享，是人最基本欲望。推荐阅读，你会更好地了解这个时代，创造这个时代！</p>
+
+<!--more-->
+
+
+<h2>Bruce A.Tate 《七周七语言 理解多种编程范式》</h2>
+
+<p><img src="http://sharecore.info/images/2012books/qizhouqiyuyan.jpg"/></p>
+
+<p>此书获得了2011年的jolt图书大奖。去年获奖时，我就开始关注此书，但当时苦于国内买不到。好在今年，国内立马引进了，这点还是很不错的（说句实话，现在国内技术的引入与推广氛围，都做得不错了，期待国内的技术创新上能更上一层楼）！这本书不厚，用三百来页内容介绍了七门不同编程范式的语言。对理解编程范式有很大的帮助。如果你还是精于某一类编程范式的语言，建议读读本书。你会理解到面向对象，原型编程，逻辑语言编程，函数式编程这些不同的编程模型！嗯，尤其是书中的Erlang语言，建议仔细读读，并尝试一下！</p>
+
+<h2>Terence Parr 《编程语言实现模式》</h2>
+
+<p><img src="http://sharecore.info/images/2012books/bianchenyuyanshixianmoshi.jpg"/></p>
+
+<p>怎么说呢，推荐这书，我还是有些矛盾的！并不是说，这本书不够优秀，而是此书并不是适合所有的人，他研究的是编程语言设计模式。如果你跟我一样对编程语言的实现，有兴趣，可以阅读。读完还可以去尝试实现一门简单的DSL。美兴趣的话，就忽略吧！</p>
+
+<h2>斯科特.博克顿《演讲之禅》</h2>
+
+<p><img src="http://sharecore.info/images/2012books/yanjiangzhichan.jpg"/></p>
+
+<p>看书名就知道了，这是一本讲演讲的书。从这本书中，我获得的第一个演讲技巧是：千万不要纠着演讲中的失误不放，因为你怎么对待失误，你的听众也将怎么对待它。作者作为一个非常有经验的技术演讲家，在书中道出了很多技巧，可以仔细阅读！</p>
+
+<h2>Terence Ryan《布道之道 引领团队拥抱技术创新》</h2>
+
+<p><img src="http://sharecore.info/images/2012books/budaozhidao.jpg"/></p>
+
+<p>我得承认了，这本书我仔细读完了，但是我不知道是我不得其法，还是环境不对，我在“布道”上做得真的不好！但本书教会了我，去辨识环境的重要性以及如何去辨识所处的环境。只是可惜了，我学会了辨识，但还没学到其中的“道”。希望你读了，能得“道”，并做得比我更好！好吧，希望如此！</p>
+
+<h2>柏杨《中国人史纲》</h2>
+
+<p><img src="http://sharecore.info/images/2012books/zhongguorenshigang.jpg"/> <img src="http://sharecore.info/images/2012books/boyang.jpg"/></p>
+
+<p>不得不把柏杨先生的这本书，放在最后，以体现我对本书和柏杨先生的尊重！（好像跟前面说的排序方式矛盾了，但这确实是我现在的真实感受!）。柏杨，是位真正的斗士！尽管他骂过“丑陋的中国人”，但是从他的历史书里，才看到了拳拳爱国之心！读读吧，它帮你梳理了整个中国史的脉络！让你更了解我们的民族——伟大但又有些懦弱的民族！我，其实，也一直为我身为这个民族的一份子，而无比骄傲！为我们的民族，有柏杨先生这样的斗士，而自豪着！</p>
+
+<p>——Justin Huang 于2012年末！也期待你能分享你这一年阅读，这一年的思考！</p>
+]]></content>
+  </entry>
+  
+</feed>

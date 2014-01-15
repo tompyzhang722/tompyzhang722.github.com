@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: javascript | ShareCore]]></title>
+  <link href="http://sharecore.info/blog/categories/javascript/atom.xml" rel="self"/>
+  <link href="http://sharecore.info/"/>
+  <updated>2014-01-14T09:29:10+08:00</updated>
+  <id>http://sharecore.info/</id>
+  <author>
+    <name><![CDATA[Justin Huang]]></name>
+    <email><![CDATA[justinhuang917@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[json ⊄ js(json不是javascript的子集)]]></title>
+    <link href="http://sharecore.info/blog/2012/12/28/json-is-not-subset-of-javascript/"/>
+    <updated>2012-12-28T13:08:00+08:00</updated>
+    <id>http://sharecore.info/blog/2012/12/28/json-is-not-subset-of-javascript</id>
+    <content type="html"><![CDATA[<p>转译：<a href="https://medium.com/joys-of-javascript/42a28471221d">原文链接</a>
+传统的观点是json是javascript的子集，其实事实并非如此。</p>
+
+<p>如下，我们定义一个完全合法的json字符串：
+<code>json
+{"str": "own ed"}
+</code></p>
+
+<p>然后我们将上面的语句完整复制粘帖到浏览器的控制台，并将它赋值给一个变量，稍后，我们将得到一个错误提示：“SyntaxError: Unexpected token ILLEGAL”。</p>
+
+<p>这个问题的是由于在javascript中，将两个unicode编码“\u2028”和“\u2029”当作了行终止符(<a href="http://es5.github.com/#x7.3">line terminators</a>)。我们将上面的字符串解码后得到的将是“own\u2028ed”。</p>
+
+<h2>为什么这是一个问题？</h2>
+
+<p>json现在已被当作一种方便的序列化格式来使用，而且大多数的情况下，并不依赖json是不是javascript的子集这个事实。
+在JSONP中，服务端会在请求响应中添加在调用的页面里执行的一个回调函数：
+<code>javascript
+handleResponse({"status": "ok", "id": 123456});
+</code>
+在一些库中，为兼容一些古老的浏览器，使用了“eval”这种不安全但是快速的方式，来转换JSON</p>
+
+<p><code>javascript
+function unsafeParse(json) {
+ return eval("(" + json + ")");
+}
+</code></p>
+
+<p>另外一个常用的场景就是，在页面中嵌入服务端生成的全局变量，以避免额外的服务端请求：</p>
+
+<p><code>javascript
+var GLOBALS = {
+ "userid": 123456,
+ "twitterName": "dpup",
+ "role": "editor"
+};
+</code>
+在这两个例子中，行终止符将会中断转换（parsing）的执行，可能让你得到一个被破坏的页面。我敢肯定，这是一个定时炸弹，会影响到很多网站。</p>
+
+<h2>该怎么做？</h2>
+
+<p><em>JSON已经完成，不会再有调整了！——Douglas Crockford,2009</em></p>
+
+<p>对老道的这话，存在着不同的讨论！但针对上面这个问题，情感上还是坚持不作改变的！是好是坏，我们还是得坚持json原来的样子！由此，修改json的方式行不通，我们需要一个绕过问题的方法。一种用法是， 我们可以使用类似Closure的<a href="http://closure-library.googlecode.com/svn/docs/closure_goog_string_string.js.html">escapeString</a>方法来解码转换所有非ascii字符。另外一个是，针对"\u2028"和"\u2029"两个字符作特殊的处理。如：</p>
+
+<p><code>javascript
+function jsStringify(obj) {
+ return JSON.stringify(obj)
+ .replace(/\u2028/g, '\\u2028')
+ .replace(/\u2029/g, '\\u2029');
+}
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: mind | ShareCore]]></title>
+  <link href="http://sharecore.info/blog/categories/mind/atom.xml" rel="self"/>
+  <link href="http://sharecore.info/"/>
+  <updated>2014-01-14T09:29:10+08:00</updated>
+  <id>http://sharecore.info/</id>
+  <author>
+    <name><![CDATA[Justin Huang]]></name>
+    <email><![CDATA[justinhuang917@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[思维导图汇集]]></title>
+    <link href="http://sharecore.info/blog/2014/01/11/mind-collection/"/>
+    <updated>2014-01-11T22:51:00+08:00</updated>
+    <id>http://sharecore.info/blog/2014/01/11/mind-collection</id>
+    <content type="html"><![CDATA[<ul>
+<li><p>深入理解计算机系统 (<a href="/files/mind/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F.xmind">xmind</a>
+<a href="/files/mind/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F.jpg">image</a>)</p></li>
+<li><p>C语言编程 (<a href="/files/mind/C%E8%AF%AD%E8%A8%80%E7%BC%96%E7%A8%8B.xmind">xmind</a>
+<a href="/files/mind/C%E8%AF%AD%E8%A8%80%E7%BC%96%E7%A8%8B.jpg">image</a>)</p></li>
+<li><p>算法导论 (<a href="/files/mind/%E7%AE%97%E6%B3%95%E5%AF%BC%E8%AE%BA.xmind">xmind</a>
+<a href="/files/mind/%E7%AE%97%E6%B3%95%E5%AF%BC%E8%AE%BA.jpg">image</a>)</p></li>
+<li><p>后台服务架构 (<a href="/files/mind/%E5%90%8E%E5%8F%B0%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84.xmind">xmind</a>
+<a href="/files/mind/%E5%90%8E%E5%8F%B0%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84.jpg">image</a>)</p></li>
+</ul>
+
+
+<p><a href="https://drive.google.com/folderview?id=0B5KXtyL8-_vGMUZDeEtpZnhrbFE&amp;usp=sharing">GoogleDrive存储</a></p>
+]]></content>
+  </entry>
+  
+</feed>

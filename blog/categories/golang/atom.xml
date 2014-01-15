@@ -1,0 +1,713 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: golang | ShareCore]]></title>
+  <link href="http://sharecore.info/blog/categories/golang/atom.xml" rel="self"/>
+  <link href="http://sharecore.info/"/>
+  <updated>2014-01-14T09:29:10+08:00</updated>
+  <id>http://sharecore.info/</id>
+  <author>
+    <name><![CDATA[Justin Huang]]></name>
+    <email><![CDATA[justinhuang917@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Go的List操作上的一个小“坑”]]></title>
+    <link href="http://sharecore.info/blog/2014/01/09/the-trap-in-golang-list/"/>
+    <updated>2014-01-09T23:42:00+08:00</updated>
+    <id>http://sharecore.info/blog/2014/01/09/the-trap-in-golang-list</id>
+    <content type="html"><![CDATA[<p>一直想不清楚一个问题，简单设计的东西到底是“坑多”还是“坑少”呢？ 复杂的设计，考虑的太全面，使用起来更麻烦，使用者容易陷入乱，落入自身的陷阱;而简单的设计呢，在许多方面上又顾及不周，如果使用者对其“设计”没仔细研究，或者其实现本身又是一个黑盒子，也容易掉入到设计本身遗留下来的“陷阱”。下面是我刚开始使用Go写代码时碰到的一个小“坑”，这个“坑”的原因我归结为后者。</p>
+
+<p>这个“小坑”来自于go的container/list package的使用上。导致“坑”的代码大概如下所示：
+``` go
+package main</p>
+
+<p>import (</p>
+
+<pre><code>"container/list"
+"fmt"
+</code></pre>
+
+<p>)</p>
+
+<p>func main() {</p>
+
+<pre><code>//初始化一个list
+l := list.New()
+l.PushBack(1)
+l.PushBack(2)
+l.PushBack(3)
+l.PushBack(4)
+
+fmt.Println("Before Removing...")
+//遍历list，删除元素
+for e := l.Front(); e != nil; e = e.Next() {
+    fmt.Println("removing", e.Value)
+    l.Remove(e)
+}
+fmt.Println("After Removing...")
+//遍历删除完元素后的list
+for e := l.Front(); e != nil; e = e.Next() {
+    fmt.Println(e.Value)
+}
+</code></pre>
+
+<p>}</p>
+
+<p><code>
+以上代码很简单，按常理来看，应该能得到正确的结果，list最后将会被清空。可事实却完全不是这样，执行后结果如下：
+</code> sh
+Before Removing...
+removing 1
+After Removing...
+2
+3
+4
+```</p>
+
+<p>从结果可以看出，list根本没有清空，而只是删除了第一个元素。这是为何？原因就在container/list package的<a href="https://code.google.com/p/go/source/browse/src/pkg/container/list/list.go">实现</a>上了。这应该是我见过的实现最简单list了，出去注释也就100来行实现代码，而且它不只是一个简单链表，而且可以当做stack，当做queue来使用。</p>
+
+<p>下面是Remove方法的代码：</p>
+
+<p>``` go
+// remove removes e from its list, decrements l.len, and returns e.
+func (l <em>List) remove(e </em>Element) *Element {</p>
+
+<pre><code>e.prev.next = e.next
+e.next.prev = e.prev
+e.next = nil // avoid memory leaks
+e.prev = nil // avoid memory leaks
+e.list = nil
+l.len--
+return e
+</code></pre>
+
+<p>}
+```</p>
+
+<p>这下问题原因就明显了，就出现在e.next = nil 这行代码上。当执行玩remove,e.next就变成了nil,list遍历当然也就终止了。找出问题的原因，我们就容易找到workaround的办法了，将e.next用中间变量保存起来就OK了，代码如下：
+``` go
+package main</p>
+
+<p>import (</p>
+
+<pre><code>"container/list"
+"fmt"
+</code></pre>
+
+<p>)</p>
+
+<p>func main() {</p>
+
+<pre><code>l := list.New()
+l.PushBack(1)
+l.PushBack(2)
+l.PushBack(3)
+l.PushBack(4)
+fmt.Println("Before Removing...")
+var n *list.Element
+for e := l.Front(); e != nil; e = n {
+    fmt.Println("removing", e.Value)
+    n = e.Next()
+    l.Remove(e)
+}
+fmt.Println("After Removing...")
+for e := l.Front(); e != nil; e = e.Next() {
+    fmt.Println(e.Value)
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>正常结果输出：
+<code>sh
+Before Removing...
+removing 1
+removing 2
+removing 3
+removing 4
+After Removing...
+</code></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Go Slice机制解析]]></title>
+    <link href="http://sharecore.info/blog/2013/09/29/slice-mechanics-by-rob/"/>
+    <updated>2013-09-29T19:26:00+08:00</updated>
+    <id>http://sharecore.info/blog/2013/09/29/slice-mechanics-by-rob</id>
+    <content type="html"><![CDATA[<p>Rob Pike写了篇关于Go的数组与切片的文章：<a href="http://blog.golang.org/slices">Arrays, slices (and strings): The mechanics of 'append'</a> ，介绍了slice的实现和一些常见的操作。其部分内容与我<a href="http://sharecore.info/blog/2013/07/23/the-trap-of-go-slice-appending/">这篇文章</a>是重复的,所以就不一一翻译了，而是挑选部分内容记下，算是对我<a href="http://sharecore.info/blog/2013/07/23/the-trap-of-go-slice-appending/">这篇文章</a>的一个内容补充。</p>
+
+<p>对于以下内容的理解，首先需要理解[这篇文章]来(http://sharecore.info/blog/2013/07/23/the-trap-of-go-slice-appending/)提到的关于slice的结构定义，即可以用一个包含长度和一个指向数组的指针(当然还有容量)的struct来描述。</p>
+
+<p><code>go
+type sliceHeader struct{
+ Ptr *int //指向分配的数组的指针
+ Len int  // 长度
+ Cap int  // 容量
+}
+</code></p>
+
+<p>通过以下方式来定义一个slice:
+<code>go
+ arr := [5]int{1, 2, 3, 4, 5}
+ slice:=arr[2:4]
+</code>
+以上slice其实等同于以下定义：
+<code>go
+slice:=sliceHeader{
+ Len:2,
+ Cap:3,
+ Ptr:&amp;arr[2]
+}
+</code></p>
+
+<p>了解了以上的定义，我们再看几种情况：</p>
+
+<ul>
+<li>将slice当做参数传递时，其实相当于<strong>值传递</strong>了一个sliceHeader，这个sliceHeader包含了一个指向原数组的指针:</li>
+</ul>
+
+
+<p>``` go
+func AddOneToEachElement(slice []int) {</p>
+
+<pre><code>for i := range slice {
+    slice[i]++
+}
+</code></pre>
+
+<p>}</p>
+
+<p>func SubtractOneFromLength(slice []byte) []byte {</p>
+
+<pre><code>return slice[0 : len(slice)-1]
+</code></pre>
+
+<p>}</p>
+
+<p>func main() {</p>
+
+<pre><code>arr := [5]int{1, 2, 3, 4, 5}
+slice := arr[2:4]
+//执行对元素+1的操作
+fmt.Println("Before Array:", arr)
+AddOneToEachElement(slice)
+fmt.Println("After Array:", arr)
+
+//执行长度切割操作
+fmt.Println("Before: len(slice) =", len(slice))
+newSlice := SubtractOneFromLength(slice)
+fmt.Println("After:  len(slice) =", len(slice))
+fmt.Println("After:  len(newSlice) =", len(newSlice))
+</code></pre>
+
+<p>}
+```
+输出结果：</p>
+
+<p>``` sh
+Before Array: [1 2 3 4 5]
+After Array: [1 2 4 5 5] //数组的值被相应的改变</p>
+
+<p>Before: len(slice) = 2
+After:  len(slice) = 2//原来slice的长度并没有改变，说明slice参数是用的值传递
+After:  len(newSlice) = 1
+```</p>
+
+<ul>
+<li>如果需要将slice当做引用传递，需要使用<strong>slice指针</strong>。（<strong>其实，用指针来表示引用传递，几乎就是Go中指针的唯一作用了，Go并不支持指针运算等特性</strong>）
+``` go
+func PtrSubtractOneFromLength(slicePtr <em>[]int) {
+  slice := </em>slicePtr
+  *slicePtr = slice[0 : len(slice)-1]
+}</li>
+</ul>
+
+
+<p>func main() {</p>
+
+<pre><code>arr := [5]int{1, 2, 3, 4, 5}
+slice := arr[2:4]
+fmt.Println("Before: len(slice) =", len(slice))
+PtrSubtractOneFromLength(&amp;slice)
+fmt.Println("After:  len(slice) =", len(slice))
+</code></pre>
+
+<p>}
+<code>
+输出结果：
+</code> sh
+Before: len(slice) = 2
+After:  len(slice) = 1//原来slice的长度发生变化，所以使用指针时，是引用传递
+```</p>
+
+<ul>
+<li>关于Cap字段的值，是由指针所指的数组的长度和来指定的。坎以下代码，我们对一个slice进行扩展：</li>
+</ul>
+
+
+<p>``` go
+func Extend(slice []int, element int) []int {</p>
+
+<pre><code>n := len(slice)
+slice = slice[0 : n+1]
+slice[n] = element
+return slice
+</code></pre>
+
+<p>}
+func main() {</p>
+
+<pre><code>arr := [5]int{}
+slice := arr[0:0]
+for i := 0; i &lt; 20; i++ {
+    slice = Extend(slice, i)
+    fmt.Println(slice)
+}
+</code></pre>
+
+<p>}
+<code>
+输出结果：
+</code> sh
+[0]
+[0 1]
+[0 1 2]
+[0 1 2 3]
+[0 1 2 3 4]</p>
+
+<p>panic: runtime error: slice bounds out of range</p>
+
+<p>goroutine 1 [running]:
+main.main()</p>
+
+<pre><code>/home/justinhuang/src/go/src/test/slice1.go:17 +0x82
+</code></pre>
+
+<p>```</p>
+
+<p>通过上面输出看到，当slice的长度达到数组长度(5)时，将出现越界的错误。</p>
+
+<p>当然，你也可以使用内置方法cap()来获取slice的容量。
+``` go
+if cap(slice) == len(slice) {</p>
+
+<pre><code>fmt.Println("slice is full!")
+</code></pre>
+
+<p>}
+<code>
+* 字符串可以当做一个字节slice([]byte)来操作，
+</code> go
+slash := "/usr/ken"[0] //将得到字节值：'/'
+usr := "/usr/ken"[0:4] // 将得到字符串："/usr"
+<code>
+以下可以将字符串反转为一个slice（[]byte）
+</code> go
+slice := []byte(usr)
+```</p>
+
+<p>字符串的操作，在我实现的razor视图引擎里大量用到：<a href="https://github.com/JustinHuang917/gof/blob/master/goftool/parser/razor/razorparser.go">razorparser.go</a></p>
+
+<p>更多关于slice的make,copy，append操作，详见我<a href="http://sharecore.info/blog/2013/07/23/the-trap-of-go-slice-appending/">这篇文章</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[对Go的Slice进行Append的一个“坑”]]></title>
+    <link href="http://sharecore.info/blog/2013/07/23/the-trap-of-go-slice-appending/"/>
+    <updated>2013-07-23T23:34:00+08:00</updated>
+    <id>http://sharecore.info/blog/2013/07/23/the-trap-of-go-slice-appending</id>
+    <content type="html"><![CDATA[<p>今天我们说说Go为数不多的一个“坑”。这个“坑”的代码是这样的：
+```go
+func main() {</p>
+
+<pre><code>arr1 := [5]int{1, 2, 3, 4, 5}
+slice1 := arr1[1:2]
+slice1 = append(slice1, 6, 7, 8)
+fmt.Println("slice1:", slice1)
+fmt.Println("arr1:", arr1)
+
+arr2 := [5]int{1, 2, 3, 4, 5}
+slice2 := arr2[1:3]
+slice2 = append(slice2, 6, 7, 8)
+fmt.Println("slice2:", slice2)
+fmt.Println("arr2:", arr2)
+</code></pre>
+
+<p>}
+<code>
+上面代码输出结果是：
+</code>sh
+$ go run sliceTrap.go
+slice1: [2 6 7 8]
+arr1: [1 2 6 7 8] //神奇地，原数组被改变了
+slice2: [2 3 6 7 8]
+arr2: [1 2 3 4 5] //一切正常
+```
+从上结果发现，原来的arr1的值被“莫名”改变了，但arr2的值并没有改变，这貌似并不符合我们的预期。当然，这是Go代码的一个“坑”，我们写代码时需要特别注意避免。接下来，探讨一下这个“坑”的背后原因。</p>
+
+<p>首先，我们需要了解一个slice有三个基本组成元素：一个指向首元素的指针，一个长度值和一个容量值。我们可以下面这样的结构来表示slice。（go的内部类似实现可以在/src/pkg/runtime/runtime.h下查看）
+<code>go
+type slice struct{
+ Ptr *int //指向分配的数组的指针
+ Len int  // 长度
+ Cap int  // 容量
+}
+</code>
+可以调用make方法来创建一个slice
+<code>go
+func make([]T, len, [cap]) []T
+</code>
+通过make方式的参数，可以看到，一个slice接收一个指定类型，一个指定长度和一个可选的容量参数。make方法调用后，它背后其实一样分配了一个指定类型的数组，并返回一个slice引用指向该数组。如：
+<code>go
+slice：= make([]int, 5, 5)
+//注意：Go的默认零值
+// slice == []int{0, 0, 0, 0, 0}
+</code>
+调用make时，当cap参数未指定，那它的值与len相同。如：
+<code>go
+slice:=make([]int,5)
+//len(slice)==5
+//cap(slice)==5
+</code>
+除了以上两种方式创建slice，我们也可以采用对原slice或数组进行切片的方式来创建，如：
+```go
+arr := [5]int{1, 2, 3, 4, 5}
+s1 := arr[1:4]//对数组进行切片
+//len(s1)== 3 //len为切片开始位置到结束位置的个数
+//cap(s1)=4 //容量为原数组总长度减开始位置</p>
+
+<p>s2:=s1[2:] //对slice进行切片
+//len(s2)==1 //len为切片开始位置到结束位置的个数
+//cap(s2)==2 //容量为原slice总容量减开始位置
+```</p>
+
+<p>这里有一点需要特别了解，<strong>对slice进行切片操作，并不会新创建一个对象（分配内存），而只是在原来slice的基础上移动指针位置。</strong>了解对一点，对我们结合下文，理解本文开头提到的“坑”有帮助。我们用下面的图来说明这一点，更好理解。
+<code>go
+slice := []int{1, 2, 3, 4, 5}
+newslice:=slice[2:4]
+</code></p>
+
+<p><img src="/images/slicebug/slicing.png" alt="slicing" /></p>
+
+<p>slice的容量值，限定了slice可容纳元素的最多个数，当我们往slice里添加新元素，导致元素个数超过容量时（len>cap）,则需要对slice进行扩容（Growing slices）。append方法的调用就是典型的扩容示例。我们来来模拟一下append方法的基本实现：
+```go
+func AppendInt(slice []int, data ...int) []int {</p>
+
+<pre><code>m := len(slice)
+n := m + len(data)
+if n &gt; cap(slice) {//判断是否需要扩容
+    //创建新的slice，其实也就是开辟了一个新的内存空间，
+    //并返回了指向新地址的指针（一般会是增加为总需要长度的两倍，加1是为了防止n=0的情况）
+    newSlice := make([]int, (n+1)*2)
+
+    //将旧的slice的元素值，copy到新创建的slice
+    copy(newSlice, slice)
+
+   //关键的一步，slice重新指向新分配的slice，这也就是本文开头的例子里arr2的值没有变化的原因
+    slice = newSlice 
+}
+slice = slice[0:n]
+</code></pre>
+
+<p>   //由于本步的copy操作，直接改变了原slice(如果没有重分配的话)里元素的值，
+   //所以导致了本文开头的例子里arr2的值的变化</p>
+
+<pre><code>copy(slice[m:n], data)
+return slice
+</code></pre>
+
+<p>}
+```</p>
+
+<p>上面的代码，基本模拟了buitIn方法append的实现，具体的内部实现可以从Go的代码/src/pkg/runtime/slice.c里看到,也可以在文章最后附加内容里查看。</p>
+
+<p>通过上面的模拟append函数的代码可以看出，当append进来的元素个数会导致超出原slice的容量限制时会执行下面步骤：</p>
+
+<ol>
+<li><p>创建一个容量更大的slice（扩容）。与对slice进行切片操作不同，这个slice是全新的，它的数组也是全新的，指针也是指向新数组的首位置。</p></li>
+<li><p>新slice创建好后，会将原来被append的slice的元素内容进行值复制到新的slice。</p></li>
+<li><p>将要被append元素，追加到新slice的末尾。</p></li>
+</ol>
+
+
+<p>从以上几步可以看出，对slice进行扩容后追加元素，原slice的状态不会发生任何改变。这也就解释了本文开头的代码里，arr2的值，为什么没有发生变化。</p>
+
+<p>但与slice需要扩容不同的是，当原slice容量足够，不需要进行扩容时，那对slice元素的追加，都是发生在原slice里的（数组里），所以，原数组被“悄悄”改变了。这也解释了，为什么arr1的状态被改变了的原因。</p>
+
+<p>附：/src/pkg/runtime/slice.c runtime·appendslice函数代码
+```c
+void runtime·appendslice(SliceType *t, Slice x, Slice y, Slice ret)
+{</p>
+
+<pre><code>intgo m;
+uintptr w;
+void *pc;
+uint8 *p, *q;
+
+m = x.len+y.len;
+w = t-&gt;elem-&gt;size;
+
+if(m &lt; x.len)
+    runtime·throw("append: slice overflow");
+
+if(m &gt; x.cap)
+    growslice1(t, x, m, &amp;ret);
+else
+    ret = x;
+
+if(raceenabled) {
+    // Don't mark read/writes on the newly allocated slice.
+    pc = runtime·getcallerpc(&amp;t);
+    // read x[:len]
+    if(m &gt; x.cap)
+        runtime·racereadrangepc(x.array, x.len*w, w, pc, runtime·appendslice);
+    // read y
+    runtime·racereadrangepc(y.array, y.len*w, w, pc, runtime·appendslice);
+    // write x[len(x):len(x)+len(y)]
+    if(m &lt;= x.cap)
+        runtime·racewriterangepc(ret.array+ret.len*w, y.len*w, w, pc, runtime·appendslice);
+}
+
+// A very common case is appending bytes. Small appends can avoid the overhead of memmove.
+// We can generalize a bit here, and just pick small-sized appends.
+p = ret.array+ret.len*w;
+q = y.array;
+w *= y.len;
+if(w &lt;= appendCrossover) {
+    if(p &lt;= q || w &lt;= p-q) // No overlap.
+        while(w-- &gt; 0)
+            *p++ = *q++;
+    else {
+        p += w;
+        q += w;
+        while(w-- &gt; 0)
+            *--p = *--q;
+    }
+} else {
+    runtime·memmove(p, q, w);
+}
+ret.len += y.len;
+FLUSH(&amp;ret);
+</code></pre>
+
+<p>}</p>
+
+<p>static void growslice1(SliceType <em>t, Slice x, intgo newcap, Slice </em>ret)
+{</p>
+
+<pre><code>intgo m;
+
+m = x.cap;
+
+// Using newcap directly for m+m &lt; newcap handles
+// both the case where m == 0 and also the case where
+// m+m/4 wraps around, in which case the loop
+// below might never terminate.
+if(m+m &lt; newcap)
+    m = newcap;
+else {
+    do {
+        if(x.len &lt; 1024)
+            m += m;
+        else
+            m += m/4;
+    } while(m &lt; newcap);
+}
+makeslice1(t, x.len, m, ret);
+runtime·memmove(ret-&gt;array, x.array, ret-&gt;len * t-&gt;elem-&gt;size);
+</code></pre>
+
+<p>}
+```</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[怎么写Go的基准测试]]></title>
+    <link href="http://sharecore.info/blog/2013/07/04/how-to-write-benchmark-test-in-go/"/>
+    <updated>2013-07-04T00:50:00+08:00</updated>
+    <id>http://sharecore.info/blog/2013/07/04/how-to-write-benchmark-test-in-go</id>
+    <content type="html"><![CDATA[<p>Dave Cheney在他的blog写了一篇关于Go的基准测试编写的基本介绍(<a href="http://dave.cheney.net/2013/06/30/how-to-write-benchmarks-in-go">链接</a>)。我以此为内容，整理输出内容。</p>
+
+<p>对自己编写package编写基准测试是必不可少的过程，尤其对于执行性能有重要影响的代码，更是需要。Go向来是以工具丰富而著称的，从代码格式调整，到单元测试，到<a href="http://golang.org/doc/articles/race_detector.html">竞争检查</a>，以及我们接下来要介绍的基准测试，都提供方便的工具给开发者。</p>
+
+<p>我们以Fibonacci函数来介绍。
+``` go
+//fib.go
+func Fib(n int) int {</p>
+
+<pre><code>if n &lt; 2 {
+    return n
+}
+return Fib(n-1) + Fib(n-2)
+</code></pre>
+
+<p>}
+```</p>
+
+<p>编写第一个benchmark testing:
+``` go
+//fib_test.go
+func BenchmarkFib10(b *testing.B) {</p>
+
+<pre><code>// 执行b.N 次Fib函数
+for n := 0; n &lt; b.N; n++ {
+    Fib(10)
+}
+</code></pre>
+
+<p>}
+```
+以下几点需要注意：</p>
+
+<ul>
+<li>基准测试需要位于文件名为"｛packagename｝_test.go"的文件中，如这里的"fib_test.go"</li>
+<li>需要引入“testing”包</li>
+<li>基准测试函数需要以"Benchmark"为函数名的开头</li>
+<li>基准函数会执行许多遍。b.N的没次执行都会自增长，直到工具认为统计数据已经满足基准测试输出的要求。</li>
+</ul>
+
+
+<p>完成以上代码，我们就可以调用工具执行测试了：
+<code>sh
+$ go test -bench=.
+testing: warning: no tests to run
+PASS
+BenchmarkFib10   2000000           835 ns/op
+ok      test/fib    2.522s
+</code>
+注意：</p>
+
+<ul>
+<li>以上结果的第一行和第二行结果是go test执行的结果。</li>
+<li>与go test相似，-bench flag可接收一个有效的正则表达式来执行符合条件的测试函数。</li>
+</ul>
+
+
+<p>同时，也轻易通过以下代码扩展，得到多个测试基准的结果：
+``` go
+func benchmarkFib(i int, b *testing.B) {</p>
+
+<pre><code>for n := 0; n &lt; b.N; n++ {
+    Fib(i)
+}
+</code></pre>
+
+<p>}</p>
+
+<p>func BenchmarkFib1(b <em>testing.B)  { benchmarkFib(1, b) }
+func BenchmarkFib2(b </em>testing.B)  { benchmarkFib(2, b) }
+func BenchmarkFib3(b <em>testing.B)  { benchmarkFib(3, b) }
+func BenchmarkFib10(b </em>testing.B) { benchmarkFib(10, b) }
+func BenchmarkFib20(b <em>testing.B) { benchmarkFib(20, b) }
+func BenchmarkFib40(b </em>testing.B) { benchmarkFib(40, b) }
+<code>
+运行结果：
+</code> sh
+BenchmarkFib1   500000000            7.81 ns/op
+BenchmarkFib2   100000000           18.4 ns/op
+BenchmarkFib3   100000000           24.9 ns/op
+BenchmarkFib10   1000000          1269 ns/op
+BenchmarkFib20     20000        109198 ns/op
+BenchmarkFib40         1    1780678179 ns/op
+ok      test/fib    14.852s
+```
+其他说明：</p>
+
+<ul>
+<li><p>每个测试的运行最小运行时间默认是1s，如果测试返回结果时，运行时间还没达到1s，b.N将以1, 2, 5, 10, 20, 50, … 的序列递增，然后重新运行测试代码。</p></li>
+<li><p>注意上面的结果中，BenchmarkFib40只运行了一次，这是由于它的执行太慢。为了得到更大的样例数据，你可以通过设置最小运行时间来达到。设置-benchtime flag的即可。
+<code>sh
+go test  -bench=Fib40 -benchtime=10s
+PASS
+BenchmarkFib40        10    1711313264 ns/op
+ok      test/fib    18.989s
+</code></p></li>
+</ul>
+
+
+<p>特别注意:
+* 由于b.N是字增的，所以要谨慎用它来做函数参数。不要患下面这样的错误，否则，测试运行将没法终止。
+``` go
+func BenchmarkFibWrong(b *testing.B) {</p>
+
+<pre><code>for n := 0; n &lt; b.N; n++ {
+    Fib(n)
+}
+</code></pre>
+
+<p>}</p>
+
+<p>func BenchmarkFibWrong2(b *testing.B) {</p>
+
+<pre><code>Fib(b.N)
+</code></pre>
+
+<p>}
+```</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Let's Go Programming]]></title>
+    <link href="http://sharecore.info/blog/2013/06/11/let-us-go-programming/"/>
+    <updated>2013-06-11T21:40:00+08:00</updated>
+    <id>http://sharecore.info/blog/2013/06/11/let-us-go-programming</id>
+    <content type="html"><![CDATA[<!--more-->
+
+
+<div id="slides" style="display:none">
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s1.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s2.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s3.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s4.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s5.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s6.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s7.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s8.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s9.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s10.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s11.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s12.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s13.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s14.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s15.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s16.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s17.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s18.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s19.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s20.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s21.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s22.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s23.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s24.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s25.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s26.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s27.jpg"/>
+<img src="http://sharecore.info/images/slides/letusgoprogramming/s28.jpg"/>
+</div>
+
+
+<script>
+$(function(){
+  $("#slides").slidesjs({
+    width: 940,
+    height: 700,
+    pagination: {
+      active: false,
+      effect: "slide"
+    }
+  });
+});
+</script>
+
+]]></content>
+  </entry>
+  
+</feed>
